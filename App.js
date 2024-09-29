@@ -3,6 +3,9 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Activities from './screens/Activities';
+import Diet from './screens/Diet';
+import AddActivity from './screens/AddActivity';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -21,18 +24,8 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Home" component={BottomTabNavigator} />
-        <Stack.Screen name="Activities" component={Activities} />
-        <Stack.Screen name="Diet" component={Diet} />
+        <Stack.Screen name="AddActivity" component={AddActivity} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
