@@ -1,7 +1,8 @@
-import React, {useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { View, Text, TextInput, Button, Alert, StyleSheet} from 'react-native'
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { DataContext } from '../context/DataContext';
 
 export default function AddActivity( { navigation } ) {
   const [activity, setActivity] = useState('');
@@ -26,7 +27,16 @@ export default function AddActivity( { navigation } ) {
       Alert.alert('Invalid input', 'Please check your input values');
       return;
     }
-    // update context here 
+    
+    const newActivity = {
+      id: Date.now(),
+      name: activity,
+      date: date.toDateString(),
+      duration: `${duration} min`,
+    };
+
+    addActivity(newActivity);
+
     navigation.goBack();    
   }
 
