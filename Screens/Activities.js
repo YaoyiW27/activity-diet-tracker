@@ -1,12 +1,12 @@
 import React from 'react'
 import { View, Text, Button } from 'react-native'
-import ItemList from '../components/ItemList';
+import ItemsList from '../components/ItemsList';
 
 export default function Activities( { navigation } ) {
   return (
     <View>
       <Button title="Add" onPress={() => navigation.navigate('AddActivity')} />
-      <ItemList type="activity" />
+      <ItemsList type="activity" />
     </View>
   )
 }
