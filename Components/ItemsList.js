@@ -1,18 +1,15 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { View, Text, FlatList } from 'react-native'
-
-const data = {
-    activities: [],
-    diet: [],
-}
+import { DataContext } from '../context/DataContext';
 
 export default function ItemsList({ type }) {
-  const entries = data[type];
+  const { activities, diet } = useContext(DataContext);
+  const entries = type === 'activities' ? activities : diet;
 
   return (
     <FlatList
       data={entries}
-      keyExtractor={item => item.id}
+      keyExtractor={item => item.id.toString()} 
       renderItem={({ item }) => (
         <View>
           <Text>{item.name}</Text>
