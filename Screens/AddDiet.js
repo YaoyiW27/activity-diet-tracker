@@ -1,6 +1,7 @@
-import React, {useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { View, Text, TextInput, Button, Alert, StyleSheet} from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { DataContext } from '../context/DataContext';
 
 export default function AddDiet( { navigation } ) {
   const [description, setDescription] = useState('');
@@ -20,7 +21,15 @@ export default function AddDiet( { navigation } ) {
 
     const isSpecial = calories > 800;
 
-    // update context here 
+    const newDiet = {
+      id: Date.now(),
+      name: description,
+      date: date.toDateString(),
+      calories: calories,
+      special: isSpecial,
+    };
+
+    addDiet(newDiet);
     
     navigation.goBack();    
   }
