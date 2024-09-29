@@ -8,6 +8,8 @@ export default function AddDiet( { navigation } ) {
   const [calories, setCalories] = useState('');
   const [date, setDate] = useState(new Date());
 
+  const { addDiet } = useContext(DataContext);
+  
   const onSave = () => {
     if (!description || !date || !calories) {
       Alert.alert('Invalid input', 'Please fill all fields');

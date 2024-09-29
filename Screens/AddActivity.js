@@ -17,6 +17,8 @@ export default function AddActivity( { navigation } ) {
     {label: 'Yoga', value: 'Yoga'},
   ]);
 
+  const { addActivity } = useContext(DataContext);
+  
   const onSave = () => {
     if (!activity || !date || !duration) {
       Alert.alert('Invalid input', 'Please fill all fields');
