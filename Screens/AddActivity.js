@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useLayoutEffect } from 'react'
 import { View, Text, TextInput, Button, Alert, StyleSheet} from 'react-native'
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -18,7 +18,14 @@ export default function AddActivity( { navigation } ) {
   ]);
 
   const { addActivity } = useContext(DataContext);
-  
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: 'Add An Activity',
+      headerBackTitleVisible: false,
+    })
+  }, [navigation]);
+
   const onSave = () => {
     if (!activity || !date || !duration) {
       Alert.alert('Invalid input', 'Please fill all fields');

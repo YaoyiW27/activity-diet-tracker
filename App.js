@@ -31,7 +31,7 @@ export default function App() {
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen name="Home" component={BottomTabNavigator} options={{headerShown: false}} />
-            <Stack.Screen name="AddActivity" component={AddActivity} />
+            <Stack.Screen name="AddActivity" component={AddActivity} options={{headerTitle: 'Add An Activity', headerBackTitleVisible: false}} />
             <Stack.Screen name="AddDiet" component={AddDiet} />
           </Stack.Navigator>
         </NavigationContainer>
