@@ -9,6 +9,7 @@ import Settings from './screens/Settings';
 import AddActivity from './screens/AddActivity';
 import AddDiet from './screens/AddDiet';
 import { ThemeProvider } from './context/ThemeContext';
+import { DataProvider } from './context/DataContext';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -26,13 +27,15 @@ function BottomTabNavigator() {
 export default function App() {
   return (
     <ThemeProvider>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name="Home" component={BottomTabNavigator} options={{headerShown: false}} />
-          <Stack.Screen name="AddActivity" component={AddActivity} />
-          <Stack.Screen name="AddDiet" component={AddDiet} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <DataProvider>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen name="Home" component={BottomTabNavigator} options={{headerShown: false}} />
+            <Stack.Screen name="AddActivity" component={AddActivity} />
+            <Stack.Screen name="AddDiet" component={AddDiet} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </DataProvider>
     </ThemeProvider>
   );
 }
