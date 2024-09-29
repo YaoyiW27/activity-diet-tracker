@@ -6,7 +6,7 @@ export default function Activities( { navigation } ) {
   return (
     <View>
       <Button title="Add" onPress={() => navigation.navigate('AddActivity')} />
-      <ItemsList type="activity" />
+      <ItemsList type="activities" />
     </View>
   )
 }

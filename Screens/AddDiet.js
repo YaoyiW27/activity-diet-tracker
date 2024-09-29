@@ -1,5 +1,5 @@
 import React, {useState } from 'react'
-import { View, Text, TextInput, Button, Alert} from 'react-native'
+import { View, Text, TextInput, Button, Alert, StyleSheet} from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function AddDiet( { navigation } ) {
@@ -27,18 +27,22 @@ export default function AddDiet( { navigation } ) {
 
   return (
     <View>
-      <Text>Description *</Text>
+      <Text style={styles.label}>Description *</Text>
       <TextInput
         value={description}
-        onChangeText={setDuration}
+        onChangeText={setDescription}
       />
-      <Text>Calories *</Text>
+      <Text style={styles.label}>Calories *</Text>
       <TextInput
         keyboardType='numeric'
         value={calories}
         onChangeText={setCalories}
       />
-      <Text>Date *</Text>
+      <Text style={styles.label}>Date *</Text>
+      <TextInput  
+        value={date.toDateString()}
+        editable={false}
+      />
       <DateTimePicker
         value={date}
         mode='date'
@@ -53,3 +57,11 @@ export default function AddDiet( { navigation } ) {
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  label: {
+    marginBottom: 10,
+    fontSize: 16,
+    color: '#006400',
+  },
+});

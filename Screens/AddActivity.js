@@ -1,5 +1,5 @@
 import React, {useState } from 'react'
-import { View, Text, TextInput, Button, Alert} from 'react-native'
+import { View, Text, TextInput, Button, Alert, StyleSheet} from 'react-native'
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -32,7 +32,7 @@ export default function AddActivity( { navigation } ) {
 
   return (
     <View>
-      <Text>Activity *</Text>
+      <Text style={styles.label}>Activity *</Text>
       <DropDownPicker
         open={open}
         value={activity}
@@ -42,13 +42,18 @@ export default function AddActivity( { navigation } ) {
         setItems={setItems}
         placeholder='Select An Activity'
       />
-      <Text>Duration *</Text>
+      <Text style={styles.label}>Duration (min) *</Text>
       <TextInput
+        style={styles.input}
         keyboardType='numeric'
         value={duration}
         onChangeText={setDuration}
       />
-      <Text>Date *</Text>
+      <Text style={styles.label}>Date *</Text>
+      <TextInput  
+        value={date.toDateString()}
+        editable={false}
+      />
       <DateTimePicker
         value={date}
         mode='date'
@@ -63,3 +68,11 @@ export default function AddActivity( { navigation } ) {
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  label: {
+    marginBottom: 10,
+    fontSize: 16,
+    color: '#006400',
+  },
+});
