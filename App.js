@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Activities from './screens/Activities';
 import Diet from './screens/Diet';
 import AddActivity from './screens/AddActivity';
+import AddDiet from './screens/AddDiet';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -25,6 +26,7 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen name="Home" component={BottomTabNavigator} />
         <Stack.Screen name="AddActivity" component={AddActivity} />
+        <Stack.Screen name="AddDiet" component={AddDiet} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -32,7 +32,7 @@ export default function AddActivity( { navigation } ) {
 
   return (
     <View>
-      <Text>Select An Activity</Text>
+      <Text>Activity *</Text>
       <DropDownPicker
         open={open}
         value={activity}
@@ -40,12 +40,15 @@ export default function AddActivity( { navigation } ) {
         setOpen={setOpen}
         setValue={setActivity}
         setItems={setItems}
+        placeholder='Select An Activity'
       />
+      <Text>Duration *</Text>
       <TextInput
         keyboardType='numeric'
         value={duration}
         onChangeText={setDuration}
       />
+      <Text>Date *</Text>
       <DateTimePicker
         value={date}
         mode='date'
