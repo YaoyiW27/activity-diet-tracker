@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 10,
+        backgroundColor: '#a3b18a',
     },
     label: {
         marginBottom: 5,
