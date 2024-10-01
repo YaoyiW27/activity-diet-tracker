@@ -21,10 +21,12 @@ export default function AddActivity( { navigation } ) {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: 'Add An Activity',
-      headerBackTitleVisible: false,
-    })
-  }, [navigation]);
+        headerTitle: 'Add An Activity',
+        headerBackTitleVisible: false,
+        headerStyle: { backgroundColor: '#3a5a40' },
+        headerTintColor: '#fff',
+    });
+}, [navigation]);
 
   const onDateChange = (event, selectedDate) => {
     if (event.type === 'dismissed') {

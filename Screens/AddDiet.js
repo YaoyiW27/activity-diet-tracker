@@ -14,8 +14,10 @@ export default function AddDiet( { navigation } ) {
     navigation.setOptions({
       headerTitle: 'Add A Diet Activity',
       headerBackTitleVisible: false,
-    })
-  }, [navigation]);
+      headerStyle: { backgroundColor: '#3a5a40' },
+      headerTintColor: '#fff',
+  });
+}, [navigation]);
   
   const onDateChange = (event, selectedDate) => {
     if (event.type === 'dismissed') {
