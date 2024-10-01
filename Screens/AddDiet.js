@@ -5,6 +5,7 @@ import { DataContext } from '../context/DataContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { styles } from '../style/StyleHelper';
 import SaveCancelButtonGroup from '../components/SaveCancelButtonGroup'; 
+import DatePickerInput from '../components/DatePickerInput';  
 
 export default function AddDiet({ navigation }) {
     const { themeStyles } = useContext(ThemeContext);
@@ -69,18 +70,12 @@ export default function AddDiet({ navigation }) {
                 value={calories}
                 onChangeText={setCalories}
             />
-            <Text style={[styles.label, { color: themeStyles.textColor }]}>Date *</Text>
-            <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.input}>
-                <Text>{formattedDate}</Text>
-            </TouchableOpacity>
-            {showDatePicker && (
-                <DateTimePicker
-                    value={date}
-                    mode='date'
-                    display='inline'
-                    onChange={onDateChange}
-                />
-            )}
+            <DatePickerInput 
+                label="Date *" 
+                date={date} 
+                onDateChange={setDate} 
+                themeStyles={themeStyles} 
+            />
             <SaveCancelButtonGroup
                 onSave={onSave}
                 onCancel={() => navigation.goBack()}

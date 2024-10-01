@@ -1,11 +1,11 @@
 import React, { useState, useContext, useLayoutEffect } from 'react';
-import { View, Text, TextInput, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Alert } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { DataContext } from '../context/DataContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { styles } from '../style/StyleHelper';
-import SaveCancelButtonGroup from '../components/SaveCancelButtonGroup'; 
+import SaveCancelButtonGroup from '../components/SaveCancelButtonGroup';
+import DatePickerInput from '../components/DatePickerInput';  
 
 export default function AddActivity({ navigation }) {
     const { themeStyles } = useContext(ThemeContext);
@@ -13,7 +13,6 @@ export default function AddActivity({ navigation }) {
     const [date, setDate] = useState(null);
     const [duration, setDuration] = useState('');
     const [open, setOpen] = useState(false);
-    const [showDatePicker, setShowDatePicker] = useState(false);
     const { addActivity } = useContext(DataContext);
 
     useLayoutEffect(() => {
@@ -24,13 +23,6 @@ export default function AddActivity({ navigation }) {
             headerTintColor: '#fff',
         });
     }, [navigation]);
-
-    const onDateChange = (event, selectedDate) => {
-        setShowDatePicker(false);
-        setDate(selectedDate || date);
-    };
-
-    const displayDate = date ? date.toDateString() : '';
 
     const onSave = () => {
         if (!activity || !date || !duration) {
@@ -56,7 +48,7 @@ export default function AddActivity({ navigation }) {
     };
 
     return (
-        <View style={[styles.addScreenContainer, { backgroundColor: themeStyles.backgroundColor } ]}>
+        <View style={[styles.addScreenContainer, { backgroundColor: themeStyles.backgroundColor }]}>
             <Text style={[styles.label, { color: themeStyles.textColor }]}>Activity *</Text>
             <DropDownPicker
                 open={open}
@@ -81,18 +73,12 @@ export default function AddActivity({ navigation }) {
                 value={duration}
                 onChangeText={setDuration}
             />
-            <Text style={[styles.label, { color: themeStyles.textColor }]}>Date *</Text>
-            <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.input}>
-                <Text>{displayDate}</Text>
-            </TouchableOpacity>
-            {showDatePicker && (
-                <DateTimePicker
-                    value={date || new Date()}
-                    mode='date'
-                    display='inline'
-                    onChange={onDateChange}
-                />
-            )}
+            <DatePickerInput 
+                label="Date *" 
+                date={date} 
+                onDateChange={setDate} 
+                themeStyles={themeStyles} 
+            />
             <SaveCancelButtonGroup
                 onSave={onSave}
                 onCancel={() => navigation.goBack()}
