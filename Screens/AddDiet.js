@@ -55,9 +55,10 @@ export default function AddDiet({ navigation }) {
         <View style={styles.container}>
             <Text style={[styles.label, { color: themeStyles.textColor }]}>Description *</Text>
             <TextInput
-                style={styles.input}
+                style={[styles.input, styles.tallInput]}
                 value={description}
                 onChangeText={setDescription}
+                multiline={true}
             />
             <Text style={[styles.label, { color: themeStyles.textColor }]}>Calories *</Text>
             <TextInput
@@ -109,6 +110,9 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         backgroundColor: '#fff',
         justifyContent: 'center',
+    },
+    tallInput: {
+        height: 100,
     },
     buttonContainer: {
       flexDirection: 'row',
