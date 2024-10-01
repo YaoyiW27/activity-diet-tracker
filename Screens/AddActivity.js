@@ -5,6 +5,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { DataContext } from '../context/DataContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { styles } from '../style/StyleHelper';
+import SaveCancelButtonGroup from '../components/SaveCancelButtonGroup'; 
 
 export default function AddActivity({ navigation }) {
     const { themeStyles } = useContext(ThemeContext);
@@ -92,14 +93,11 @@ export default function AddActivity({ navigation }) {
                     onChange={onDateChange}
                 />
             )}
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
-                    <Text style={{ color: themeStyles.textColor, textAlign: 'center'}}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={onSave}>
-                    <Text style={{ color: themeStyles.textColor, textAlign: 'center'}}>Save</Text>
-                </TouchableOpacity>
-            </View>
+            <SaveCancelButtonGroup
+                onSave={onSave}
+                onCancel={() => navigation.goBack()}
+                themeStyles={themeStyles}
+            />
         </View>
     );
 }
