@@ -1,23 +1,26 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import ItemsList from '../components/ItemsList';
+import { ThemeContext } from '../context/ThemeContext'; 
 
 export default function Diet({ navigation }) {
+  const { themeStyles } = useContext(ThemeContext);  
+
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity
           onPress={() => navigation.navigate('AddDiet')}
-          style={styles.addButton}
+          style={[styles.addButton, { backgroundColor: themeStyles.backgroundColor }]}  
         >
-          <Text style={styles.addButtonText}>Add</Text>
+          <Text style={{ color: themeStyles.textColor }}>Add</Text> 
         </TouchableOpacity>
       ),
     });
-  }, [navigation]);
+  }, [navigation, themeStyles]);  
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: themeStyles.backgroundColor }]}>
       <ItemsList type="diet" />
     </View>
   );
@@ -29,15 +32,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'stretch', 
     padding: 10, 
-    backgroundColor: '#a3b18a'
   },
   addButton: {
-    backgroundColor: '#d4a373', 
     padding: 10,
     borderRadius: 5, 
   },
-  addButtonText: {
-    color: '#fff', 
-    fontSize: 16, 
-  }
 });

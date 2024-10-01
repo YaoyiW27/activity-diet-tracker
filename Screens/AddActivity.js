@@ -3,8 +3,10 @@ import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity } from 'reac
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { DataContext } from '../context/DataContext';
+import { ThemeContext } from '../context/ThemeContext';
 
 export default function AddActivity({ navigation }) {
+    const { themeStyles } = useContext(ThemeContext);
     const [activity, setActivity] = useState('');
     const [date, setDate] = useState(null);
     const [duration, setDuration] = useState('');
@@ -52,7 +54,7 @@ export default function AddActivity({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.label}>Activity *</Text>
+            <Text style={[styles.label, { color: themeStyles.textColor }]}>Activity *</Text>
             <DropDownPicker
                 open={open}
                 value={activity}
@@ -69,14 +71,14 @@ export default function AddActivity({ navigation }) {
                 placeholder='Select An Activity' 
                 style={styles.picker}
             />
-            <Text style={styles.label}>Duration (min) *</Text>
+            <Text style={[styles.label, { color: themeStyles.textColor }]}>Duration (min) *</Text>
             <TextInput
                 style={styles.input}
                 keyboardType='numeric'
                 value={duration}
                 onChangeText={setDuration}
             />
-            <Text style={styles.label}>Date *</Text>
+            <Text style={[styles.label, { color: themeStyles.textColor }]}>Date *</Text>
             <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.input}>
                 <Text>{displayDate}</Text>
             </TouchableOpacity>
@@ -90,10 +92,10 @@ export default function AddActivity({ navigation }) {
             )}
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
-                    <Text style={styles.buttonText}>Cancel</Text>
+                    <Text style={{ color: themeStyles.textColor, textAlign: 'center'}}>Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button} onPress={onSave}>
-                    <Text style={styles.buttonText}>Save</Text>
+                    <Text style={{ color: themeStyles.textColor, textAlign: 'center'}}>Save</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -138,7 +140,7 @@ const styles = StyleSheet.create({
         flex: 0.48,
     },
     buttonText: {
-        color: '#fff',
+        color: '#000',
         textAlign: 'center',
     },
 });

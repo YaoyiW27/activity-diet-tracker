@@ -1,23 +1,22 @@
-import React, { useContext } from 'react'
-import { View, Text, Button, StyleSheet } from 'react-native'
-import { ThemeContext } from '../context/ThemeContext'
+import React, { useContext } from 'react';
+import { View, Button, StyleSheet } from 'react-native';
+import { ThemeContext } from '../context/ThemeContext';
 
 export default function Settings() {
-  const { theme, toggleTheme } = useContext(ThemeContext);
+  const { themeStyles, toggleTheme } = useContext(ThemeContext);
 
   return (
-    <View style={styles.container}>
-      <Button title="Toggle Theme" onPress={toggleTheme} />
+    <View style={[styles.container, { backgroundColor: themeStyles.backgroundColor }]}>
+      <Button title="Toggle Theme" onPress={toggleTheme} color={themeStyles.textColor} />
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, 
+    flex: 1,
     justifyContent: 'center',
-    alignItems: 'center', 
-    padding: 10, 
-    backgroundColor: '#a3b18a'
+    alignItems: 'center',
+    padding: 10,
   },
 });

@@ -2,8 +2,10 @@ import React, { useState, useContext, useLayoutEffect } from 'react';
 import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { DataContext } from '../context/DataContext';
+import { ThemeContext } from '../context/ThemeContext';
 
 export default function AddDiet({ navigation }) {
+    const { themeStyles } = useContext(ThemeContext);
     const [description, setDescription] = useState('');
     const [calories, setCalories] = useState('');
     const [date, setDate] = useState(new Date());
@@ -51,20 +53,20 @@ export default function AddDiet({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.label}>Description *</Text>
+            <Text style={[styles.label, { color: themeStyles.textColor }]}>Description *</Text>
             <TextInput
                 style={styles.input}
                 value={description}
                 onChangeText={setDescription}
             />
-            <Text style={styles.label}>Calories *</Text>
+            <Text style={[styles.label, { color: themeStyles.textColor }]}>Calories *</Text>
             <TextInput
                 style={styles.input}
                 keyboardType='numeric'
                 value={calories}
                 onChangeText={setCalories}
             />
-            <Text style={styles.label}>Date *</Text>
+            <Text style={[styles.label, { color: themeStyles.textColor }]}>Date *</Text>
             <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.input}>
                 <Text>{formattedDate}</Text>
             </TouchableOpacity>
@@ -78,10 +80,10 @@ export default function AddDiet({ navigation }) {
             )}
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>  
-                    <Text style={styles.buttonText}>Cancel</Text>
+                    <Text style={{ color: themeStyles.textColor, textAlign: 'center'}}>Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button} onPress={onSave}>  
-                    <Text style={styles.buttonText}>Save</Text>
+                    <Text style={{ color: themeStyles.textColor, textAlign: 'center'}}>Save</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -120,7 +122,7 @@ const styles = StyleSheet.create({
       flex: 0.48,
     },
     buttonText: {
-      color: '#fff',
+      color: '#000',
       textAlign: 'center',
     },
 });
