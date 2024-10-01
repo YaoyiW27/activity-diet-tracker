@@ -1,5 +1,4 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -19,10 +18,30 @@ const Tab = createBottomTabNavigator();
 
 function BottomTabNavigator() {
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Activities" component={Activities} options={{ tabBarIcon: ({ color, size }) => (<MaterialIcons name="directions-run" size={24} color="black" />) }}/>
-      <Tab.Screen name="Diet" component={Diet} options={{ tabBarIcon: ({ color, size }) => (<MaterialCommunityIcons name="food" size={24} color="black" />) }}/>
-      <Tab.Screen name="Settings" component={Settings} options={{ tabBarIcon: ({ color, size }) => (<Ionicons name="settings" size={24} color="black" />) }}/>
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+          if (route.name === 'Activities') {
+            iconName = 'directions-run';
+            return <MaterialIcons name={iconName} size={size} color={color} />;
+          } else if (route.name === 'Diet') {
+            iconName = 'food';
+            return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
+          } else if (route.name === 'Settings') {
+            iconName = 'settings';
+            return <Ionicons name={iconName} size={size} color={color} />;
+          }
+        },
+      })}
+      tabBarOptions={{
+        activeTintColor: '#d4a373', // Color of the icon when tab is active
+        inactiveTintColor: 'black', // Color of the icon when tab is inactive
+      }}
+    >
+      <Tab.Screen name="Activities" component={Activities} />
+      <Tab.Screen name="Diet" component={Diet} />
+      <Tab.Screen name="Settings" component={Settings} />
     </Tab.Navigator>
   );
 }
