@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,            
     padding: 10,                
     marginVertical: 8,           
-    marginHorizontal: 16,       
+    flex: 1,   
     shadowOpacity: 0.15,        
     shadowRadius: 5,            
     shadowColor: '#000',      

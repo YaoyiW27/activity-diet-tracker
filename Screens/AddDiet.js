@@ -41,7 +41,7 @@ export default function AddDiet({ navigation }) {
             id: Date.now(),
             name: description,
             date: date.toDateString(),
-            calories: `${calories} kcal`, 
+            calories: `${calories} `, 
             special: calories > 800, 
         };
 
@@ -80,7 +80,7 @@ export default function AddDiet({ navigation }) {
                 <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>  
                     <Text style={styles.buttonText}>Cancel</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>  
+                <TouchableOpacity style={styles.button} onPress={onSave}>  
                     <Text style={styles.buttonText}>Save</Text>
                 </TouchableOpacity>
             </View>

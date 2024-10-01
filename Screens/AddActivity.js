@@ -65,7 +65,7 @@ export default function AddActivity({ navigation }) {
                 ]}
                 setOpen={setOpen}
                 setValue={setActivity}
-                setItems={() => {}}
+                setItems={items => items}
                 placeholder='Select An Activity' 
                 style={styles.picker}
             />
