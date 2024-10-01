@@ -1,9 +1,10 @@
 import React, { useState, useContext, useLayoutEffect } from 'react';
-import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Alert, TouchableOpacity } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { DataContext } from '../context/DataContext';
 import { ThemeContext } from '../context/ThemeContext';
+import { styles } from '../style/StyleHelper';
 
 export default function AddActivity({ navigation }) {
     const { themeStyles } = useContext(ThemeContext);
@@ -54,7 +55,7 @@ export default function AddActivity({ navigation }) {
     };
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.addScreenContainer, { backgroundColor: themeStyles.backgroundColor } ]}>
             <Text style={[styles.label, { color: themeStyles.textColor }]}>Activity *</Text>
             <DropDownPicker
                 open={open}
@@ -102,46 +103,3 @@ export default function AddActivity({ navigation }) {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 10,
-        backgroundColor: '#a3b18a',
-    },
-    label: {
-        marginBottom: 5,
-        fontSize: 14,
-        color: '#344e41',
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#3a5a40',
-        padding: 8,
-        marginBottom: 5,
-        borderRadius: 5,
-        backgroundColor: '#fff',
-        justifyContent: 'center',
-    },
-    picker: {
-        backgroundColor: '#fff',
-        marginBottom: 5,
-        borderRadius: 5,
-        borderColor: '#3a5a40',
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: 10,
-    },
-    button: {
-        backgroundColor: '#3a5a40',
-        padding: 8,
-        borderRadius: 5,
-        flex: 0.48,
-    },
-    buttonText: {
-        color: '#000',
-        textAlign: 'center',
-    },
-});

@@ -1,4 +1,5 @@
 import React, { createContext, useState } from 'react';
+import { colors } from '../style/StyleHelper'; 
 
 export const ThemeContext = createContext();
 
@@ -10,8 +11,8 @@ export const ThemeProvider = ({ children }) => {
   };
 
   const themeStyles = theme === 'light' 
-    ? { backgroundColor: '#a3b18a', textColor: '#fff' } 
-    : { backgroundColor: '#84a98c', textColor: '#000' };
+    ? colors.lightTheme
+    : colors.darkTheme; 
 
   return (
     <ThemeContext.Provider value={{ themeStyles, toggleTheme }}>

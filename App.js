@@ -12,6 +12,7 @@ import AddActivity from './screens/AddActivity';
 import AddDiet from './screens/AddDiet';
 import { ThemeProvider } from './context/ThemeContext';
 import { DataProvider } from './context/DataContext';
+import { colors } from './style/StyleHelper';  
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -33,28 +34,28 @@ function BottomTabNavigator() {
             return <Ionicons name={iconName} size={size} color={color} />;
           }
         },
-        tabBarActiveTintColor: '#d4a373', 
-        tabBarInactiveTintColor: 'black',
-        tabBarStyle: { backgroundColor: '#3a5a40' }, 
+        tabBarActiveTintColor: colors.activeTintColor,
+        tabBarInactiveTintColor: colors.inactiveTintColor, 
+        tabBarStyle: { backgroundColor: colors.tabBarBackgroundColor }, 
       })}
     >
       <Tab.Screen name="Activities" component={Activities} options={{
         headerStyle: {
-          backgroundColor: '#3a5a40'  
+          backgroundColor: colors.headerBackgroundColor  
         },
-        headerTintColor: '#fff'  
+        headerTintColor: colors.headerTextColor
       }} />
       <Tab.Screen name="Diet" component={Diet} options={{
         headerStyle: {
-          backgroundColor: '#3a5a40'  
+          backgroundColor: colors.headerBackgroundColor  
         },
-        headerTintColor: '#fff'  
+        headerTintColor: colors.headerTextColor  
       }} />
       <Tab.Screen name="Settings" component={Settings} options={{
         headerStyle: {
-          backgroundColor: '#3a5a40'  
+          backgroundColor: colors.headerBackgroundColor  
         },
-        headerTintColor: '#fff'  
+        headerTintColor: colors.headerTextColor  
       }} />
     </Tab.Navigator>
   );
