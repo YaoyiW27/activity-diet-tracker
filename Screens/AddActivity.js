@@ -46,6 +46,7 @@ export default function AddActivity({ navigation }) {
             name: activity,
             date: date.toDateString(),
             duration: `${duration} min`,
+            special: duration > 60,
         };
 
         addActivity(newActivity);
