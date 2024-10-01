@@ -1,5 +1,5 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -20,11 +20,11 @@ const Tab = createBottomTabNavigator();
 function BottomTabNavigator() {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Activities" component={Activities} options={{tabBarIcon: ({ color, size }) => (<MaterialIcons name="directions-run" size={24} color="black" />) }}/>
-      <Tab.Screen name="Diet" component={Diet} options={{tabBarIcon: ({ color, size }) => (<MaterialCommunityIcons name="food" size={24} color="black" />) }}/>
-      <Tab.Screen name="Settings" component={Settings} options={{tabBarIcon: ({ color, size }) => (<Ionicons name="settings" size={24} color="black" />) }}/>
+      <Tab.Screen name="Activities" component={Activities} options={{ tabBarIcon: ({ color, size }) => (<MaterialIcons name="directions-run" size={24} color="black" />) }}/>
+      <Tab.Screen name="Diet" component={Diet} options={{ tabBarIcon: ({ color, size }) => (<MaterialCommunityIcons name="food" size={24} color="black" />) }}/>
+      <Tab.Screen name="Settings" component={Settings} options={{ tabBarIcon: ({ color, size }) => (<Ionicons name="settings" size={24} color="black" />) }}/>
     </Tab.Navigator>
-  )
+  );
 }
 
 export default function App() {
@@ -33,7 +33,7 @@ export default function App() {
       <DataProvider>
         <NavigationContainer>
           <Stack.Navigator>
-            <Stack.Screen name="Home" component={BottomTabNavigator} options={{headerShown: false}} />
+            <Stack.Screen name="Home" component={BottomTabNavigator} options={{ headerShown: false }} />
             <Stack.Screen name="AddActivity" component={AddActivity} />
             <Stack.Screen name="AddDiet" component={AddDiet} />
           </Stack.Navigator>

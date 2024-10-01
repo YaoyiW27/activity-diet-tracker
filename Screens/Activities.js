@@ -1,12 +1,23 @@
-import React from 'react'
-import { View, Text, Button } from 'react-native'
+import React from 'react';
+import { View, Text, Button } from 'react-native';
 import ItemsList from '../components/ItemsList';
 
-export default function Activities( { navigation } ) {
+export default function Activities({ navigation }) {
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button
+          onPress={() => navigation.navigate('AddActivity')}
+          title="Add"
+          color='black'
+        />
+      ),
+    });
+  }, [navigation]);
+
   return (
     <View>
-      <Button title="Add" onPress={() => navigation.navigate('AddActivity')} />
       <ItemsList type="activities" />
     </View>
-  )
+  );
 }
