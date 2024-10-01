@@ -33,14 +33,23 @@ function BottomTabNavigator() {
             return <Ionicons name={iconName} size={size} color={color} />;
           }
         },
+        tabBarActiveTintColor: '#d4a373', 
+        tabBarInactiveTintColor: 'black',
+        tabBarStyle: { backgroundColor: '#3a5a40' }, 
       })}
-      tabBarOptions={{
-        activeTintColor: '#d4a373', // Color of the icon when tab is active
-        inactiveTintColor: 'black', // Color of the icon when tab is inactive
-      }}
     >
-      <Tab.Screen name="Activities" component={Activities} />
-      <Tab.Screen name="Diet" component={Diet} />
+      <Tab.Screen name="Activities" component={Activities} options={{
+        headerStyle: {
+          backgroundColor: '#3a5a40'  
+        },
+        headerTintColor: '#fff'  
+      }} />
+      <Tab.Screen name="Diet" component={Diet} options={{
+        headerStyle: {
+          backgroundColor: '#3a5a40'  
+        },
+        headerTintColor: '#fff'  
+      }} />
       <Tab.Screen name="Settings" component={Settings} />
     </Tab.Navigator>
   );
