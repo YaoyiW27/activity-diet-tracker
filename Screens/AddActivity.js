@@ -6,7 +6,7 @@ import { DataContext } from '../context/DataContext';
 
 export default function AddActivity({ navigation }) {
     const [activity, setActivity] = useState('');
-    const [date, setDate] = useState(null);  
+    const [date, setDate] = useState(null);
     const [duration, setDuration] = useState('');
     const [open, setOpen] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
@@ -22,7 +22,7 @@ export default function AddActivity({ navigation }) {
     }, [navigation]);
 
     const onDateChange = (event, selectedDate) => {
-        setShowDatePicker(false);  
+        setShowDatePicker(false);
         setDate(selectedDate || date);
     };
 
@@ -84,9 +84,8 @@ export default function AddActivity({ navigation }) {
                 <DateTimePicker
                     value={date || new Date()}
                     mode='date'
-                    display='inline'  
+                    display='inline'
                     onChange={onDateChange}
-                    style={{ flex: 1 }}  
                 />
             )}
             <View style={styles.buttonContainer}>
@@ -104,38 +103,38 @@ export default function AddActivity({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
+        padding: 10,
     },
     label: {
-        marginBottom: 15,
-        fontSize: 16,
+        marginBottom: 5,
+        fontSize: 14,
         color: '#000',
     },
     input: {
         borderWidth: 1,
         borderColor: '#3a5a40',
-        padding: 10,
-        marginBottom: 20,
+        padding: 8,
+        marginBottom: 5,
         borderRadius: 5,
         backgroundColor: '#fff',
         justifyContent: 'center',
     },
     picker: {
         backgroundColor: '#fff',
-        marginBottom: 20,
+        marginBottom: 5,
         borderRadius: 5,
         borderColor: '#3a5a40',
     },
     buttonContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
+        marginTop: 10,
     },
     button: {
         backgroundColor: '#3a5a40',
-        padding: 10,
+        padding: 8,
         borderRadius: 5,
-        flex: 1,
-        margin: 5,
+        flex: 0.48,
     },
     buttonText: {
         color: '#fff',
