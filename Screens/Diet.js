@@ -18,7 +18,7 @@ export default function Diet({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <ItemsList type="activities" />
+      <ItemsList type="diet" />
     </View>
   );
 }
