@@ -9,7 +9,7 @@ export default function Diet( { navigation } ) {
         <Button
           onPress={() => navigation.navigate('AddDiet')}  
           title="Add"
-          color='black'
+          color='#d4a373'
         />
       ),
     });

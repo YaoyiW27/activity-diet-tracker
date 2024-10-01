@@ -9,7 +9,7 @@ export default function Activities({ navigation }) {
         <Button
           onPress={() => navigation.navigate('AddActivity')}
           title="Add"
-          color='black'
+          color='#d4a373'
         />
       ),
     });
