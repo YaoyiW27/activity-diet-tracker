@@ -50,7 +50,12 @@ function BottomTabNavigator() {
         },
         headerTintColor: '#fff'  
       }} />
-      <Tab.Screen name="Settings" component={Settings} />
+      <Tab.Screen name="Settings" component={Settings} options={{
+        headerStyle: {
+          backgroundColor: '#3a5a40'  
+        },
+        headerTintColor: '#fff'  
+      }} />
     </Tab.Navigator>
   );
 }
