@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react'
-import { View, Text, TextInput, Button, Alert, StyleSheet} from 'react-native'
+import React, { useState, useContext, useLayoutEffect } from 'react'
+import { View, Text, TextInput, Button, Alert, StyleSheet, TouchableOpacity} from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { DataContext } from '../context/DataContext';
 
@@ -7,9 +7,27 @@ export default function AddDiet( { navigation } ) {
   const [description, setDescription] = useState('');
   const [calories, setCalories] = useState('');
   const [date, setDate] = useState(new Date());
-
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const { addDiet } = useContext(DataContext);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: 'Add A Diet Activity',
+      headerBackTitleVisible: false,
+    })
+  }, [navigation]);
   
+  const onDateChange = (event, selectedDate) => {
+    if (event.type === 'dismissed') {
+      setShowDatePicker(false);
+      return;
+    }
+    setShowDatePicker(false);
+    setDate(selectedDate);
+  };
+
+  const formattedDate = date.toLocaleDateString();
+
   const onSave = () => {
     if (!description || !date || !calories) {
       Alert.alert('Invalid input', 'Please fill all fields');
@@ -50,10 +68,13 @@ export default function AddDiet( { navigation } ) {
         onChangeText={setCalories}
       />
       <Text style={styles.label}>Date *</Text>
+      <TouchableOpacity onPress={() => setShowDatePicker(true)}>
       <TextInput  
         value={date.toDateString()}
         editable={false}
+        pointerEvents='none'
       />
+      </TouchableOpacity>
       <DateTimePicker
         value={date}
         mode='date'

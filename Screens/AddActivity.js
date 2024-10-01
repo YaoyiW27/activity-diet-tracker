@@ -1,5 +1,5 @@
 import React, { useState, useContext, useLayoutEffect } from 'react'
-import { View, Text, TextInput, Button, Alert, StyleSheet} from 'react-native'
+import { View, Text, TextInput, Button, Alert, StyleSheet, TouchableOpacity} from 'react-native'
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { DataContext } from '../context/DataContext';
@@ -16,7 +16,7 @@ export default function AddActivity( { navigation } ) {
     {label: 'Weights', value: 'Weights'},
     {label: 'Yoga', value: 'Yoga'},
   ]);
-
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const { addActivity } = useContext(DataContext);
 
   useLayoutEffect(() => {
@@ -26,6 +26,17 @@ export default function AddActivity( { navigation } ) {
     })
   }, [navigation]);
 
+  const onDateChange = (event, selectedDate) => {
+    if (event.type === 'dismissed') {
+      setShowDatePicker(false);
+      return;
+    }
+    setShowDatePicker(false);
+    setDate(selectedDate);
+  };
+  
+  const formattedDate = date.toLocaleDateString();
+  
   const onSave = () => {
     if (!activity || !date || !duration) {
       Alert.alert('Invalid input', 'Please fill all fields');
@@ -69,10 +80,13 @@ export default function AddActivity( { navigation } ) {
         onChangeText={setDuration}
       />
       <Text style={styles.label}>Date *</Text>
+      <TouchableOpacity onPress={() => setShowDatePicker(true)}>
       <TextInput  
         value={date.toDateString()}
         editable={false}
+        pointerEvents='none'
       />
+      </TouchableOpacity>
       <DateTimePicker
         value={date}
         mode='date'
