@@ -1,113 +1,144 @@
-import React, { useState, useContext, useLayoutEffect } from 'react'
-import { View, Text, TextInput, Button, Alert, StyleSheet, TouchableOpacity} from 'react-native'
+import React, { useState, useContext, useLayoutEffect } from 'react';
+import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { DataContext } from '../context/DataContext';
 
-export default function AddActivity( { navigation } ) {
-  const [activity, setActivity] = useState('');
-  const [date, setDate] = useState(new Date());
-  const [duration, setDuration] = useState('');
-  const [open, setOpen] = useState(false);
-  const [items, setItems] = useState([
-    {label: 'Walking', value: 'Walking'},
-    {label: 'Running', value: 'Running'},
-    {label: 'Swimming', value: 'Swimming'},
-    {label: 'Weights', value: 'Weights'},
-    {label: 'Yoga', value: 'Yoga'},
-  ]);
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const { addActivity } = useContext(DataContext);
+export default function AddActivity({ navigation }) {
+    const [activity, setActivity] = useState('');
+    const [date, setDate] = useState(null);  
+    const [duration, setDuration] = useState('');
+    const [open, setOpen] = useState(false);
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const { addActivity } = useContext(DataContext);
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-        headerTitle: 'Add An Activity',
-        headerBackTitleVisible: false,
-        headerStyle: { backgroundColor: '#3a5a40' },
-        headerTintColor: '#fff',
-    });
-}, [navigation]);
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerTitle: 'Add An Activity',
+            headerBackTitleVisible: false,
+            headerStyle: { backgroundColor: '#3a5a40' },
+            headerTintColor: '#fff',
+        });
+    }, [navigation]);
 
-  const onDateChange = (event, selectedDate) => {
-    if (event.type === 'dismissed') {
-      setShowDatePicker(false);
-      return;
-    }
-    setShowDatePicker(false);
-    setDate(selectedDate);
-  };
-  
-  const formattedDate = date.toLocaleDateString();
-  
-  const onSave = () => {
-    if (!activity || !date || !duration) {
-      Alert.alert('Invalid input', 'Please fill all fields');
-      return;
-    }
-
-    if (isNaN(duration) || duration <= 0) {
-      Alert.alert('Invalid input', 'Please check your input values');
-      return;
-    }
-    
-    const newActivity = {
-      id: Date.now(),
-      name: activity,
-      date: date.toDateString(),
-      duration: `${duration} min`,
+    const onDateChange = (event, selectedDate) => {
+        setShowDatePicker(false);  
+        setDate(selectedDate || date);
     };
 
-    addActivity(newActivity);
+    const displayDate = date ? date.toDateString() : '';
 
-    navigation.goBack();    
-  }
+    const onSave = () => {
+        if (!activity || !date || !duration) {
+            Alert.alert('Invalid input', 'Please fill all fields');
+            return;
+        }
 
-  return (
-    <View>
-      <Text style={styles.label}>Activity *</Text>
-      <DropDownPicker
-        open={open}
-        value={activity}
-        items={items}
-        setOpen={setOpen}
-        setValue={setActivity}
-        setItems={setItems}
-        placeholder='Select An Activity'
-      />
-      <Text style={styles.label}>Duration (min) *</Text>
-      <TextInput
-        style={styles.input}
-        keyboardType='numeric'
-        value={duration}
-        onChangeText={setDuration}
-      />
-      <Text style={styles.label}>Date *</Text>
-      <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-      <TextInput  
-        value={date.toDateString()}
-        editable={false}
-        pointerEvents='none'
-      />
-      </TouchableOpacity>
-      <DateTimePicker
-        value={date}
-        mode='date'
-        display='inline'
-        onChange={(event, selectedDate) => {
-          const currentDate = selectedDate || date;
-          setDate(currentDate);
-        }}
-      />
-        <Button title="Save" onPress={onSave} />
-        <Button title="Cancel" onPress={() => navigation.goBack()} />
-    </View>
-  )
+        if (isNaN(duration) || duration <= 0) {
+            Alert.alert('Invalid input', 'Please check your input values');
+            return;
+        }
+
+        const newActivity = {
+            id: Date.now(),
+            name: activity,
+            date: date.toDateString(),
+            duration: `${duration} min`,
+        };
+
+        addActivity(newActivity);
+        navigation.goBack();
+    };
+
+    return (
+        <View style={styles.container}>
+            <Text style={styles.label}>Activity *</Text>
+            <DropDownPicker
+                open={open}
+                value={activity}
+                items={[
+                    { label: 'Walking', value: 'Walking' },
+                    { label: 'Running', value: 'Running' },
+                    { label: 'Swimming', value: 'Swimming' },
+                    { label: 'Weights', value: 'Weights' },
+                    { label: 'Yoga', value: 'Yoga' },
+                ]}
+                setOpen={setOpen}
+                setValue={setActivity}
+                setItems={() => {}}
+                placeholder='Select An Activity'
+                style={styles.picker}
+            />
+            <Text style={styles.label}>Duration (min) *</Text>
+            <TextInput
+                style={styles.input}
+                keyboardType='numeric'
+                value={duration}
+                onChangeText={setDuration}
+            />
+            <Text style={styles.label}>Date *</Text>
+            <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.input}>
+                <Text>{displayDate}</Text>
+            </TouchableOpacity>
+            {showDatePicker && (
+                <DateTimePicker
+                    value={date || new Date()}
+                    mode='date'
+                    display='inline'  
+                    onChange={onDateChange}
+                    style={{ flex: 1 }}  
+                />
+            )}
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
+                    <Text style={styles.buttonText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={onSave}>
+                    <Text style={styles.buttonText}>Save</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  label: {
-    marginBottom: 10,
-    fontSize: 16,
-    color: '#006400',
-  },
+    container: {
+        flex: 1,
+        padding: 20,
+    },
+    label: {
+        marginBottom: 15,
+        fontSize: 16,
+        color: '#000',
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: '#3a5a40',
+        padding: 10,
+        marginBottom: 20,
+        borderRadius: 5,
+        backgroundColor: '#fff',
+        justifyContent: 'center',
+    },
+    picker: {
+        backgroundColor: '#fff',
+        marginBottom: 20,
+        borderRadius: 5,
+        borderColor: '#3a5a40',
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+    },
+    button: {
+        backgroundColor: '#3a5a40',
+        padding: 10,
+        borderRadius: 5,
+        flex: 1,
+        margin: 5,
+    },
+    buttonText: {
+        color: '#fff',
+        textAlign: 'center',
+    },
 });
