@@ -18,14 +18,14 @@ const colors = {
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1, 
-      justifyContent: 'center',
-      alignItems: 'stretch', 
-      padding: 10, 
+        flex: 1, 
+        justifyContent: 'center',
+        alignItems: 'stretch', 
+        padding: 10, 
     },
     addButton: {
-      padding: 10,
-      borderRadius: 5, 
+        padding: 10,
+        borderRadius: 5, 
     },
     addScreenContainer: {
         flex: 1,
@@ -71,24 +71,12 @@ const styles = StyleSheet.create({
         height: 100,
     },
     toggleContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 10,
-      },
-      toggleCard: {
-        backgroundColor: '#3a5a40',  
-        borderRadius: 10,            
-        padding: 10,                 
-        marginVertical: 8,          
-        width: '50%',                
-        shadowOpacity: 0.15,      
-        shadowRadius: 5,           
-        shadowColor: '#000',         
-        shadowOffset: { height: 2, width: 0 }, 
-        elevation: 4,               
-      },
-      itemsCard: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 10,
+    },
+    itemsCard: {
         backgroundColor: '#3a5a40',  
         borderRadius: 10,            
         padding: 10,                
@@ -99,34 +87,34 @@ const styles = StyleSheet.create({
         shadowColor: '#000',      
         shadowOffset: { height: 2, width: 0 }, 
         elevation: 4,             
-      },
-      rowContainer: {
+    },
+    rowContainer: {
         flexDirection: 'row',        
         justifyContent: 'space-between', 
         alignItems: 'center',       
-      },
-      activityName: {
+    },
+    activityName: {
         fontSize: 15,                
         fontWeight: 'bold',         
         color: '#FFFFFF',           
         flex: 1,                   
-      },
-      detailsContainer: {
+    },
+    detailsContainer: {
         flexDirection: 'row',        
         alignItems: 'center',        
-      },
-      detailBox: {
+    },
+    detailBox: {
         backgroundColor: '#FFFFFF',  
         padding: 8,                  
         borderRadius: 5,          
-      },
-      activityDetail: {
+    },
+    activityDetail: {
         fontSize: 13,              
         color: '#000',             
-      },
-      warning: {                        
+    },
+    warning: {                        
         marginRight: 10,
-      },
+    },
 });
 
 export { colors , styles };

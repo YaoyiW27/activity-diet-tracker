@@ -8,8 +8,8 @@ export default function Settings() {
 
   return (
     <View style={[styles.toggleContainer, { backgroundColor: themeStyles.backgroundColor }]}>
-      <View style={styles.toggleCard}>  
-        <Button title="Toggle Theme" onPress={toggleTheme} color={themeStyles.textColor} />
+      <View>  
+        <Button title="Toggle Theme" onPress={toggleTheme} />
       </View>
     </View>
   );
