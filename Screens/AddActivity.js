@@ -36,7 +36,7 @@ export default function AddActivity({ navigation }) {
         }
 
         const isSpecialActivity = (activity === 'Running' || activity === 'Weights') && duration > 60;  
-         
+
         const newActivity = {
             id: Date.now(),
             name: activity,
@@ -69,6 +69,8 @@ export default function AddActivity({ navigation }) {
                 setItems={items => items}
                 placeholder='Select An Activity' 
                 style={styles.picker}
+                scrollViewProps={{nestedScrollEnabled: true}}
+                listMode="SCROLLVIEW"
             />
             <Text style={[styles.label, { color: themeStyles.textColor }]}>Duration (min) *</Text>
             <TextInput
