@@ -35,12 +35,14 @@ export default function AddActivity({ navigation }) {
             return;
         }
 
+        const isSpecialActivity = (activity === 'Running' || activity === 'Weights') && duration > 60;  
+         
         const newActivity = {
             id: Date.now(),
             name: activity,
             date: date.toDateString(),
             duration: `${duration} min`,
-            special: duration > 60,
+            special: isSpecialActivity,
         };
 
         addActivity(newActivity);
@@ -59,6 +61,8 @@ export default function AddActivity({ navigation }) {
                     { label: 'Swimming', value: 'Swimming' },
                     { label: 'Weights', value: 'Weights' },
                     { label: 'Yoga', value: 'Yoga' },
+                    { label: 'Cycling', value: 'Cycling' },
+                    { label: 'Hiking', value: 'Hiking' },
                 ]}
                 setOpen={setOpen}
                 setValue={setActivity}
