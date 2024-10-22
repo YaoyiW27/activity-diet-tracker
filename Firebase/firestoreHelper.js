@@ -1,4 +1,3 @@
-// firestoreHelper.js
 import { collection, addDoc, doc, deleteDoc, updateDoc, onSnapshot } from 'firebase/firestore';
 import { database } from './firebaseSetup'; 
 
