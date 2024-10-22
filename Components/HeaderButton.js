@@ -1,14 +1,23 @@
 import React from 'react';
-import { TouchableOpacity, Text } from 'react-native';
-import { styles } from '../style/StyleHelper';
+import { Pressable } from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
-export default function HeaderButton({ onPress, themeStyles, title }) {
+export default function HeaderButton({ onPress, iconName, iconFamily, themeStyles }) {
+  const IconComponent = 
+    iconFamily === 'MaterialCommunityIcons' ? MaterialCommunityIcons : MaterialIcons;
+
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={onPress}
-      style={[styles.addButton, { backgroundColor: themeStyles.backgroundColor }]}
+      style={({ pressed }) => [
+        {
+          marginHorizontal: 4, 
+          opacity: pressed ? 0.5 : 1, 
+        },
+      ]}
     >
-      <Text style={{ color: themeStyles.textColor }}>{title}</Text>
-    </TouchableOpacity>
+      <IconComponent name={iconName} size={24} color={themeStyles.textColor} />
+    </Pressable>
   );
 }
