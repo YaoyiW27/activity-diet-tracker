@@ -10,6 +10,7 @@ import Diet from './screens/Diet';
 import Settings from './screens/Settings';  
 import AddActivity from './screens/AddActivity';
 import AddDiet from './screens/AddDiet';
+import Edit from './screens/Edit';
 import { ThemeProvider } from './context/ThemeContext';
 import { DataProvider } from './context/DataContext';
 import { colors } from './style/StyleHelper';  
@@ -70,6 +71,7 @@ export default function App() {
             <Stack.Screen name="Home" component={BottomTabNavigator} options={{ headerShown: false }} />
             <Stack.Screen name="AddActivity" component={AddActivity} />
             <Stack.Screen name="AddDiet" component={AddDiet} />
+            <Stack.Screen name="Edit" component={Edit} />
           </Stack.Navigator>
         </NavigationContainer>
       </DataProvider>

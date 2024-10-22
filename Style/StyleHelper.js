@@ -59,13 +59,25 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: '#3a5a40',
-        padding: 8,
-        borderRadius: 5,
-        flex: 0.48,
+        paddingVertical: 12,
+        paddingHorizontal: 20, 
+        borderRadius: 8, 
+        alignItems: 'center', 
+        alignSelf: 'center', 
+        shadowOpacity: 0.15,
+        shadowRadius: 5,
+        shadowColor: '#000',
+        shadowOffset: { height: 2, width: 0 },
+        elevation: 4, 
     },
     buttonText: {
         color: '#000',
         textAlign: 'center',
+    },
+    headerButtonContainer: {    
+        flexDirection: 'row',         
+        alignItems: 'center',        
+        marginRight: 10,             
     },
     tallInput: {
         height: 100,
