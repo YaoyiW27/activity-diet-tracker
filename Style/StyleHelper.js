@@ -74,6 +74,11 @@ const styles = StyleSheet.create({
         color: '#000',
         textAlign: 'center',
     },
+    headerButtonContainer: {    
+        flexDirection: 'row',         
+        alignItems: 'center',        
+        marginRight: 10,             
+    },
     tallInput: {
         height: 100,
     },

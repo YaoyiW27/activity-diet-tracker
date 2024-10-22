@@ -1,27 +1,27 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import ItemsList from '../components/ItemsList';
 import { ThemeContext } from '../context/ThemeContext';
 import { styles } from '../style/StyleHelper';
-import HeaderButton from '../components/HeaderButton';
+import PressableHeaderButton from '../components/PressableHeaderButton'; // Using the PressableHeaderButton
 import { onCollectionSnapshot } from '../Firebase/firestoreHelper';
 
 export default function Diet({ navigation }) {
     const { themeStyles } = useContext(ThemeContext);
     const [dietData, setDietData] = useState([]);
 
-    // Set up the navigation header with buttons
+    // Set up the navigation header with pressable buttons
     React.useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}>
-                    <HeaderButton
+                <View style={styles.headerButtonContainer}>
+                    <PressableHeaderButton
                         onPress={() => navigation.navigate('AddDiet')}
                         iconName="add"
                         iconFamily="MaterialIcons"
                         themeStyles={themeStyles}
                     />
-                    <HeaderButton
+                    <PressableHeaderButton
                         onPress={() => navigation.navigate('AddDiet')}
                         iconName="food"
                         iconFamily="MaterialCommunityIcons"
@@ -47,8 +47,7 @@ export default function Diet({ navigation }) {
             (error) => console.error('Error fetching diet entries:', error)
         );
 
-        // Clean up the subscription on unmount
-        return () => unsubscribe();
+        return () => unsubscribe(); // Clean up subscription on unmount
     }, []);
 
     // Navigate to the edit screen when a diet entry is pressed
