@@ -4,12 +4,12 @@ import ItemsList from '../components/ItemsList';
 import { ThemeContext } from '../context/ThemeContext';
 import { styles } from '../style/StyleHelper';
 import HeaderButton from '../components/HeaderButton';
-import { onCollectionSnapshot } from '../Firebase/firestoreHelper'; 
+import { onCollectionSnapshot } from '../Firebase/firestoreHelper';
 
 export default function Activities({ navigation }) {
   const { themeStyles } = useContext(ThemeContext);
   const [activities, setActivities] = useState([]);
-  
+
   // Set up the navigation header with buttons
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -50,9 +50,19 @@ export default function Activities({ navigation }) {
     return () => unsubscribe();
   }, []);
 
+  // Handle activity item press to navigate to Edit screen
+  const handleActivityPress = (item) => {
+    navigation.navigate('AddActivity', { data: item });
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: themeStyles.backgroundColor }]}>
-      <ItemsList type="activities" data={activities} navigation={navigation} />
+      <ItemsList 
+        type="activities" 
+        data={activities} 
+        navigation={navigation} 
+        onItemPress={handleActivityPress} 
+      />
     </View>
   );
 }

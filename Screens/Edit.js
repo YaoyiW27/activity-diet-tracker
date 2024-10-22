@@ -11,7 +11,7 @@ export default function Edit({ navigation, route }) {
     navigation.setOptions({
       headerRight: () => (
         <Pressable onPress={deleteHandler}>
-          <Feather name="trash-2" size={24} color="black" />
+          <Feather name="trash-2" size={24} color="white" />
         </Pressable>
       ),
     });
@@ -22,8 +22,8 @@ export default function Edit({ navigation, route }) {
       'Important',
       'Are you sure you want to delete this entry?',
       [
-        { text: 'NO', style: 'cancel' },
-        { text: 'YES', onPress: () => handleDelete() },
+        { text: 'No', style: 'cancel' },
+        { text: 'Yes', onPress: () => handleDelete() },
       ]
     );
   };

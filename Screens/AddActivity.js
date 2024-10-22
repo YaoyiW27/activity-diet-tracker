@@ -1,67 +1,67 @@
 import React, { useState, useContext, useLayoutEffect } from 'react';
-import { View, Text, TextInput, Alert } from 'react-native';
+import { View, Text, TextInput, Alert, CheckBox } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { ThemeContext } from '../context/ThemeContext';
 import { styles } from '../style/StyleHelper';
 import SaveCancelButtonGroup from '../components/SaveCancelButtonGroup';
-import DatePickerInput from '../components/DatePickerInput';  
-import { addDocument } from '../Firebase/firestoreHelper'; 
+import DatePickerInput from '../components/DatePickerInput';
+import { addDocument, updateDocument } from '../Firebase/firestoreHelper';
 
-export default function AddActivity({ navigation }) {
+export default function AddActivity({ navigation, route }) {
     const { themeStyles } = useContext(ThemeContext);
-    const [activity, setActivity] = useState('');
-    const [date, setDate] = useState(null);
-    const [duration, setDuration] = useState('');
+
+    // Initialize state with provided data if in edit mode, or default values for new entry
+    const [activity, setActivity] = useState(route.params?.data?.name || '');
+    const [date, setDate] = useState(route.params?.data ? new Date(route.params.data.date) : null);
+    const [duration, setDuration] = useState(route.params?.data?.duration.toString() || '');
+    const [isSpecial, setIsSpecial] = useState(route.params?.data?.special || false);
     const [open, setOpen] = useState(false);
 
-    // Set up the navigation header
+    // Set navigation title based on whether it's in edit mode
     useLayoutEffect(() => {
         navigation.setOptions({
-            headerTitle: 'Add An Activity',
+            headerTitle: route.params?.data ? 'Edit Activity' : 'Add An Activity',
             headerBackTitleVisible: false,
             headerStyle: { backgroundColor: '#3a5a40' },
             headerTintColor: '#fff',
         });
     }, [navigation]);
 
-    // Function to handle saving the new activity
+    // Handle saving the activity, either creating a new one or updating an existing one
     const onSave = async () => {
-        // Validate input fields
         if (!activity || !date || !duration) {
             Alert.alert('Invalid input', 'Please fill all fields');
             return;
         }
-
         if (isNaN(duration) || duration <= 0) {
             Alert.alert('Invalid input', 'Please check your input values');
             return;
         }
 
-        // Determine if the activity is special based on criteria
-        const isSpecialActivity = (activity === 'Running' || activity === 'Weights') && duration > 60;  
-
-        // Create a new activity object
         const newActivity = {
             name: activity,
             date: date.toDateString(),
             duration: Number(duration), // Ensure duration is a number
-            special: isSpecialActivity,
+            special: isSpecial,
         };
 
         try {
-            // Add the new activity to Firestore using the helper function
-            const docId = await addDocument('activities', newActivity);
-            console.log('Activity successfully added to Firestore with ID:', docId);
-            navigation.goBack(); // Navigate back to the previous screen
+            if (route.params?.data) {
+                // If in edit mode, update the existing activity
+                await updateDocument('activities', route.params.data.id, newActivity);
+            } else {
+                // Otherwise, add a new activity
+                await addDocument('activities', newActivity);
+            }
+            navigation.goBack();
         } catch (error) {
-            console.error('Error adding activity to Firestore: ', error);
-            Alert.alert('Error', 'Failed to add activity. Please try again.');
+            console.error('Error saving activity:', error);
+            Alert.alert('Error', 'Failed to save the activity. Please try again.');
         }
     };
 
     return (
         <View style={[styles.addScreenContainer, { backgroundColor: themeStyles.backgroundColor }]}>
-            {/* Activity dropdown picker */}
             <Text style={[styles.label, { color: themeStyles.textColor }]}>Activity *</Text>
             <DropDownPicker
                 open={open}
@@ -77,27 +77,32 @@ export default function AddActivity({ navigation }) {
                 ]}
                 setOpen={setOpen}
                 setValue={setActivity}
-                placeholder='Select An Activity' 
+                placeholder="Select An Activity"
                 style={styles.picker}
-                scrollViewProps={{nestedScrollEnabled: true}}
+                scrollViewProps={{ nestedScrollEnabled: true }}
                 listMode="SCROLLVIEW"
             />
-            {/* Duration input */}
             <Text style={[styles.label, { color: themeStyles.textColor }]}>Duration (min) *</Text>
             <TextInput
                 style={styles.input}
-                keyboardType='numeric'
+                keyboardType="numeric"
                 value={duration}
                 onChangeText={setDuration}
             />
-            {/* Date picker input */}
-            <DatePickerInput 
-                label="Date *" 
-                date={date} 
-                onDateChange={setDate} 
-                themeStyles={themeStyles} 
+            <DatePickerInput
+                label="Date *"
+                date={date}
+                onDateChange={setDate}
+                themeStyles={themeStyles}
             />
-            {/* Save and Cancel buttons */}
+            {route.params?.data?.special && (
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 10 }}>
+                    <Text style={[styles.label, { color: themeStyles.textColor, marginRight: 10 }]}>
+                        This item is marked as special. Select the checkbox if you would like to approve it.
+                    </Text>
+                    <CheckBox value={isSpecial} onValueChange={setIsSpecial} />
+                </View>
+            )}
             <SaveCancelButtonGroup
                 onSave={onSave}
                 onCancel={() => navigation.goBack()}
