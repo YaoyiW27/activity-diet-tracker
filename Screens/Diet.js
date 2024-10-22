@@ -40,8 +40,9 @@ export default function Diet({ navigation }) {
                 const dietEntries = snapshot.docs.map((doc) => ({
                     id: doc.id,
                     ...doc.data(),
-                }));
-                setDietData(dietEntries);
+                })).filter(item => item.name); // Ensure valid items
+
+                setDietData(dietEntries); // Update the state with fetched data
             },
             (error) => console.error('Error fetching diet entries:', error)
         );
@@ -50,6 +51,7 @@ export default function Diet({ navigation }) {
         return () => unsubscribe();
     }, []);
 
+    // Navigate to the edit screen when a diet entry is pressed
     const handleDietPress = (item) => {
         navigation.navigate('AddDiet', { type: 'edit', data: item });
     };
@@ -62,7 +64,7 @@ export default function Diet({ navigation }) {
                     ...entry,
                     warning: entry.calories > 800, // Show warning if calories > 800
                 }))}
-                onItemPress={handleDietPress} // Pass the handler to ItemsList
+                onItemPress={handleDietPress} // Pass the press handler to ItemsList
             />
         </View>
     );

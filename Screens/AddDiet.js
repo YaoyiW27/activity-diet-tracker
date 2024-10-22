@@ -1,29 +1,38 @@
 import React, { useState, useContext, useLayoutEffect, useEffect } from 'react';
 import { View, Text, TextInput, Alert, Pressable } from 'react-native';
+import Checkbox from 'expo-checkbox';
 import { ThemeContext } from '../context/ThemeContext';
 import { styles } from '../style/StyleHelper';
-import SaveCancelButtonGroup from '../components/SaveCancelButtonGroup'; 
-import DatePickerInput from '../components/DatePickerInput';  
-import { addDocument, updateDocument } from '../Firebase/firestoreHelper'; 
-import Checkbox from 'expo-checkbox'; 
+import SaveCancelButtonGroup from '../components/SaveCancelButtonGroup';
+import DatePickerInput from '../components/DatePickerInput';
+import { addDocument, updateDocument, deleteDocument } from '../Firebase/firestoreHelper';
 import { Feather } from '@expo/vector-icons';
 
-export default function AddDiet({ navigation, route, deleteHandler }) {
+export default function AddDiet({ navigation, route }) {
     const { themeStyles } = useContext(ThemeContext);
 
-    const isEditMode = route.params?.type === 'edit';
+    const isEditMode = !!route.params?.data; // Check if in edit mode
     const existingData = route.params?.data || {};
 
     // State initialization
     const [description, setDescription] = useState(existingData.name || '');
     const [calories, setCalories] = useState(existingData.calories?.toString() || '');
     const [date, setDate] = useState(existingData.date ? new Date(existingData.date) : null);
-    const [isChecked, setChecked] = useState(false); 
+    const [isChecked, setChecked] = useState(false); // Checkbox state
+    const [removeSpecial, setRemoveSpecial] = useState(false); // Track checkbox state
 
-    // Header setup
+    // Set initial checkbox state on component mount
+    useEffect(() => {
+        if (isEditMode) {
+            const special = existingData.special !== false; // Special is true unless explicitly false
+            setChecked(!special); // Checked if not special
+        }
+    }, [isEditMode, existingData]);
+
+    // Configure the navigation header with delete button in edit mode
     useLayoutEffect(() => {
         const headerRight = isEditMode ? () => (
-            <Pressable onPress={deleteHandler} style={{ paddingRight: 10 }}>
+            <Pressable onPress={handleDelete} style={{ paddingRight: 10 }}>
                 <Feather name="trash-2" size={24} color="#fff" />
             </Pressable>
         ) : undefined;
@@ -35,7 +44,26 @@ export default function AddDiet({ navigation, route, deleteHandler }) {
             headerTintColor: '#fff',
             headerRight,
         });
-    }, [navigation, isEditMode, deleteHandler]);
+    }, [navigation, isEditMode]);
+
+    // Handle the deletion of a diet entry
+    const handleDelete = () => {
+        Alert.alert(
+            'Confirm Deletion',
+            'Are you sure you want to delete this diet entry?',
+            [
+                { text: 'No', style: 'cancel' },
+                {
+                    text: 'Yes',
+                    onPress: async () => {
+                        await deleteDocument('diet', existingData.id);
+                        Alert.alert('Deleted', 'Diet entry has been deleted.');
+                        navigation.goBack();
+                    },
+                },
+            ]
+        );
+    };
 
     // Save handler
     const onSave = async () => {
@@ -43,45 +71,31 @@ export default function AddDiet({ navigation, route, deleteHandler }) {
             Alert.alert('Invalid input', 'Please fill all fields');
             return;
         }
-    
+
         if (isNaN(calories) || calories <= 0) {
-            Alert.alert('Invalid input', 'Please check your input values');
+            Alert.alert('Invalid input', 'Please enter a valid calorie amount');
             return;
         }
-    
-        // Use null if 'special' is not defined to avoid Firebase errors
-        const updatedSpecial = typeof existingData.special === 'boolean' ? (isChecked ? false : existingData.special) : null;
-    
+
+        // Determine the special status based on checkbox and calories
+        const specialCheck = !isChecked && Number(calories) > 800;
+
         const dietData = {
             name: description,
             date: date.toDateString(),
             calories: Number(calories),
-            special: updatedSpecial,
+            special: !removeSpecial && specialCheck,
         };
-    
+
         try {
             if (isEditMode) {
-                Alert.alert(
-                    'Important',
-                    'Are you sure you want to save these changes?',
-                    [
-                        { text: 'No', style: 'cancel' },
-                        {
-                            text: 'Yes',
-                            onPress: async () => {
-                                await updateDocument('diet', existingData.id, dietData);
-                                Alert.alert('Success', 'Diet entry updated successfully');
-                                navigation.goBack();
-                            },
-                        },
-                    ]
-                );
+                await updateDocument('diet', existingData.id, dietData);
+                Alert.alert('Success', 'Diet entry updated successfully');
             } else {
-                const docId = await addDocument('diet', dietData);
-                console.log('Diet entry added with ID:', docId);
+                await addDocument('diet', dietData);
                 Alert.alert('Success', 'Diet entry added successfully');
-                navigation.goBack();
             }
+            navigation.goBack();
         } catch (error) {
             console.error('Error saving diet entry:', error);
             Alert.alert('Error', 'Failed to save the diet entry. Please try again.');
@@ -95,34 +109,36 @@ export default function AddDiet({ navigation, route, deleteHandler }) {
                 style={[styles.input, styles.tallInput]}
                 value={description}
                 onChangeText={setDescription}
-                multiline={true}
+                multiline
             />
             <Text style={[styles.label, { color: themeStyles.textColor }]}>Calories *</Text>
             <TextInput
                 style={styles.input}
-                keyboardType='numeric'
+                keyboardType="numeric"
                 value={calories}
                 onChangeText={setCalories}
             />
-            <DatePickerInput 
-                label="Date *" 
-                date={date} 
-                onDateChange={setDate} 
-                themeStyles={themeStyles} 
+            <DatePickerInput
+                label="Date *"
+                date={date}
+                onDateChange={setDate}
+                themeStyles={themeStyles}
             />
-            {isEditMode && existingData.special && (
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
-                    <Text style={[styles.label, { color: themeStyles.textColor, flex: 1 }]}>
-                        This item is marked as special. Select the checkbox if you want to approve it.
+
+            {/* Show checkbox only in Edit mode */}
+            {isEditMode && (
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 10 }}>
+                    <Text style={[styles.label, { color: themeStyles.textColor, flex: 1, marginRight: 10 }]}>
+                        This item is marked as special. Select the checkbox if you want to remove the warning.
                     </Text>
                     <Checkbox
                         value={isChecked}
                         onValueChange={setChecked}
-                        style={styles.checkbox}
-                        color={themeStyles.checkboxColor}
+                        style={{ marginLeft: 10 }}
                     />
                 </View>
             )}
+
             <SaveCancelButtonGroup
                 onSave={onSave}
                 onCancel={() => navigation.goBack()}
