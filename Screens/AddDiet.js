@@ -11,28 +11,31 @@ import { Feather } from '@expo/vector-icons';
 export default function AddDiet({ navigation, route }) {
     const { themeStyles } = useContext(ThemeContext);
 
-    const isEditMode = !!route.params?.data; // Check if in edit mode
+    const isEditMode = !!route.params?.data;
     const existingData = route.params?.data || {};
 
-    // State initialization
     const [description, setDescription] = useState(existingData.name || '');
     const [calories, setCalories] = useState(existingData.calories?.toString() || '');
     const [date, setDate] = useState(existingData.date ? new Date(existingData.date) : null);
-    const [isChecked, setChecked] = useState(false); // Checkbox state
-    const [removeSpecial, setRemoveSpecial] = useState(false); // Track checkbox state
+    const [isChecked, setChecked] = useState(false);
+    const [removeSpecial, setRemoveSpecial] = useState(false);
 
-    // Set initial checkbox state on component mount
     useEffect(() => {
         if (isEditMode) {
-            const special = existingData.special !== false; // Special is true unless explicitly false
-            setChecked(!special); // Checked if not special
+            const special = existingData.special !== false;
+            setChecked(!special);
         }
     }, [isEditMode, existingData]);
 
-    // Configure the navigation header with delete button in edit mode
     useLayoutEffect(() => {
         const headerRight = isEditMode ? () => (
-            <Pressable onPress={handleDelete} style={{ paddingRight: 10 }}>
+            <Pressable
+                onPress={handleDelete}
+                style={({ pressed }) => [
+                    { paddingRight: 10, opacity: pressed ? 0.6 : 1 }
+                ]}
+                android_ripple={{ color: '#ddd' }}
+            >
                 <Feather name="trash-2" size={24} color="#fff" />
             </Pressable>
         ) : undefined;
@@ -46,7 +49,6 @@ export default function AddDiet({ navigation, route }) {
         });
     }, [navigation, isEditMode]);
 
-    // Handle the deletion of a diet entry
     const handleDelete = () => {
         Alert.alert(
             'Confirm Deletion',
@@ -65,7 +67,6 @@ export default function AddDiet({ navigation, route }) {
         );
     };
 
-    // Save handler
     const onSave = async () => {
         if (!description || !date || !calories) {
             Alert.alert('Invalid input', 'Please fill all fields');
@@ -77,7 +78,6 @@ export default function AddDiet({ navigation, route }) {
             return;
         }
 
-        // Determine the special status based on checkbox and calories
         const specialCheck = !isChecked && Number(calories) > 800;
 
         const dietData = {
@@ -125,9 +125,14 @@ export default function AddDiet({ navigation, route }) {
                 themeStyles={themeStyles}
             />
 
-            {/* Show checkbox only in Edit mode */}
             {isEditMode && (
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 10 }}>
+                <Pressable
+                    onPress={() => setChecked(!isChecked)}
+                    style={({ pressed }) => [
+                        { opacity: pressed ? 0.6 : 1, flexDirection: 'row', alignItems: 'center', marginVertical: 10 }
+                    ]}
+                    android_ripple={{ color: '#ddd' }}
+                >
                     <Text style={[styles.label, { color: themeStyles.textColor, flex: 1, marginRight: 10 }]}>
                         This item is marked as special. Select the checkbox if you want to remove the warning.
                     </Text>
@@ -136,7 +141,7 @@ export default function AddDiet({ navigation, route }) {
                         onValueChange={setChecked}
                         style={{ marginLeft: 10 }}
                     />
-                </View>
+                </Pressable>
             )}
 
             <SaveCancelButtonGroup

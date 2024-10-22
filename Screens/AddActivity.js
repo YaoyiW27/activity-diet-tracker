@@ -11,28 +11,31 @@ import { Feather } from '@expo/vector-icons';
 
 export default function AddActivity({ navigation, route }) {
     const { themeStyles } = useContext(ThemeContext);
-    const isEditMode = !!route.params?.data; // Check if we're in edit mode
+    const isEditMode = !!route.params?.data;
 
-    // Initialize state based on the activity data or default values
     const [activity, setActivity] = useState(route.params?.data?.name || '');
     const [date, setDate] = useState(route.params?.data ? new Date(route.params.data.date) : null);
     const [duration, setDuration] = useState(route.params?.data?.duration?.toString() || '');
-    const [removeSpecial, setRemoveSpecial] = useState(false); // Track checkbox state
-    const [open, setOpen] = useState(false); // Dropdown open/close state
+    const [removeSpecial, setRemoveSpecial] = useState(false);
+    const [open, setOpen] = useState(false);
 
-    // On initial load, set checkbox state based on the activity's 'special' status
     useEffect(() => {
         if (isEditMode && route.params?.data) {
-            setRemoveSpecial(!route.params.data.special); // Checkbox reflects the 'special' field
+            setRemoveSpecial(!route.params.data.special);
         }
     }, [route.params?.data, isEditMode]);
 
-    // Configure the navigation header with a delete button in edit mode
     useLayoutEffect(() => {
         navigation.setOptions({
             headerTitle: isEditMode ? 'Edit' : 'Add An Activity',
             headerRight: isEditMode ? () => (
-                <Pressable onPress={handleDelete} style={{ paddingRight: 10 }}>
+                <Pressable
+                    onPress={handleDelete}
+                    android_ripple={{ color: '#ddd' }}
+                    style={({ pressed }) => [
+                        { paddingRight: 10, opacity: pressed ? 0.6 : 1 }
+                    ]}
+                >
                     <Feather name="trash-2" size={24} color="#fff" />
                 </Pressable>
             ) : undefined,
@@ -41,7 +44,6 @@ export default function AddActivity({ navigation, route }) {
         });
     }, [navigation, isEditMode]);
 
-    // Handle the deletion of an activity
     const handleDelete = () => {
         Alert.alert(
             'Confirm Deletion',
@@ -60,7 +62,6 @@ export default function AddActivity({ navigation, route }) {
         );
     };
 
-    // Handle saving the activity
     const onSave = async () => {
         if (!activity || !date || !duration) {
             Alert.alert('Invalid input', 'Please fill all fields');
@@ -74,12 +75,11 @@ export default function AddActivity({ navigation, route }) {
 
         const shouldHaveWarning = (activity === 'Running' || activity === 'Weights') && Number(duration) > 60;
 
-        // Prepare the new activity data with the correct 'special' field
         const newActivity = {
             name: activity,
             date: date.toDateString(),
             duration: Number(duration),
-            special: !removeSpecial && shouldHaveWarning, // If checkbox is checked, 'special' becomes false
+            special: !removeSpecial && shouldHaveWarning,
         };
 
         try {
@@ -90,7 +90,7 @@ export default function AddActivity({ navigation, route }) {
                 await addDocument('activities', newActivity);
                 Alert.alert('Success', 'Activity added successfully');
             }
-            navigation.goBack(); // Go back to the activities list
+            navigation.goBack();
         } catch (error) {
             console.error('Error saving activity:', error);
             Alert.alert('Error', 'Failed to save the activity. Please try again.');
@@ -132,21 +132,23 @@ export default function AddActivity({ navigation, route }) {
                 onDateChange={setDate}
                 themeStyles={themeStyles}
             />
-
-            {/* Show checkbox only in Edit mode */}
             {isEditMode && (
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 10 }}>
+                <Pressable
+                    onPress={() => setRemoveSpecial(!removeSpecial)}
+                    android_ripple={{ color: '#ddd' }}
+                    style={({ pressed }) => [
+                        { opacity: pressed ? 0.6 : 1, flexDirection: 'row', alignItems: 'center', marginVertical: 10 }
+                    ]}
+                >
                     <Text style={[styles.label, { color: themeStyles.textColor, flex: 1, marginRight: 10 }]}>
-                        This item is marked as special. Select the checkbox if you would like to remove the special status.
+                        This item is marked as special. Select the checkbox if you want to remove the warning.
                     </Text>
                     <Checkbox
                         value={removeSpecial}
                         onValueChange={setRemoveSpecial}
-                        style={{ marginLeft: 10 }}
                     />
-                </View>
+                </Pressable>
             )}
-
             <SaveCancelButtonGroup
                 onSave={onSave}
                 onCancel={() => navigation.goBack()}
