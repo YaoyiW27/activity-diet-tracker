@@ -1,5 +1,6 @@
 import React, { useState, useContext, useLayoutEffect } from 'react';
-import { View, Text, TextInput, Alert, CheckBox } from 'react-native';
+import { View, Text, TextInput, Alert } from 'react-native';
+import Checkbox from 'expo-checkbox'; 
 import DropDownPicker from 'react-native-dropdown-picker';
 import { ThemeContext } from '../context/ThemeContext';
 import { styles } from '../style/StyleHelper';
@@ -14,7 +15,8 @@ export default function AddActivity({ navigation, route }) {
     const [activity, setActivity] = useState(route.params?.data?.name || '');
     const [date, setDate] = useState(route.params?.data ? new Date(route.params.data.date) : null);
     const [duration, setDuration] = useState(route.params?.data?.duration.toString() || '');
-    const [isSpecial, setIsSpecial] = useState(route.params?.data?.special || false);
+    const [removeSpecial, setRemoveSpecial] = useState(false); // New state to handle checkbox
+
     const [open, setOpen] = useState(false);
 
     // Set navigation title based on whether it's in edit mode
@@ -27,7 +29,7 @@ export default function AddActivity({ navigation, route }) {
         });
     }, [navigation]);
 
-    // Handle saving the activity, either creating a new one or updating an existing one
+    // Handle saving the activity
     const onSave = async () => {
         if (!activity || !date || !duration) {
             Alert.alert('Invalid input', 'Please fill all fields');
@@ -42,15 +44,15 @@ export default function AddActivity({ navigation, route }) {
             name: activity,
             date: date.toDateString(),
             duration: Number(duration), // Ensure duration is a number
-            special: isSpecial,
+            special: route.params?.data ? !removeSpecial : (activity === 'Running' || activity === 'Weights') && duration > 60,
         };
 
         try {
             if (route.params?.data) {
-                // If in edit mode, update the existing activity
+                // Update existing activity if in edit mode
                 await updateDocument('activities', route.params.data.id, newActivity);
             } else {
-                // Otherwise, add a new activity
+                // Add new activity if not in edit mode
                 await addDocument('activities', newActivity);
             }
             navigation.goBack();
@@ -97,10 +99,14 @@ export default function AddActivity({ navigation, route }) {
             />
             {route.params?.data?.special && (
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 10 }}>
-                    <Text style={[styles.label, { color: themeStyles.textColor, marginRight: 10 }]}>
-                        This item is marked as special. Select the checkbox if you would like to approve it.
+                    <Text style={[styles.label, { color: themeStyles.textColor, flex: 1, marginRight: 10 }]}>
+                        This item is marked as special. Select the checkbox if you would like to remove the special status.
                     </Text>
-                    <CheckBox value={isSpecial} onValueChange={setIsSpecial} />
+                    <Checkbox 
+                        value={removeSpecial} 
+                        onValueChange={setRemoveSpecial} 
+                        style={{ marginLeft: 10 }}
+                    />
                 </View>
             )}
             <SaveCancelButtonGroup
