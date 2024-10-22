@@ -1,45 +1,66 @@
 import React, { useState, useContext, useLayoutEffect, useEffect } from 'react';
 import { View, Text, TextInput, Alert, Pressable } from 'react-native';
+import Checkbox from 'expo-checkbox';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { ThemeContext } from '../context/ThemeContext';
 import { styles } from '../style/StyleHelper';
 import SaveCancelButtonGroup from '../components/SaveCancelButtonGroup';
-import DatePickerInput from '../components/DatePickerInput';  
-import { addDocument, updateDocument } from '../Firebase/firestoreHelper'; 
-import Checkbox from 'expo-checkbox'; 
+import DatePickerInput from '../components/DatePickerInput';
+import { addDocument, updateDocument, deleteDocument } from '../Firebase/firestoreHelper';
 import { Feather } from '@expo/vector-icons';
 
-export default function AddActivity({ navigation, route, deleteHandler }) {
+export default function AddActivity({ navigation, route }) {
     const { themeStyles } = useContext(ThemeContext);
+    const isEditMode = !!route.params?.data; // Check if we're in edit mode
 
-    const isEditMode = route.params?.type === 'edit';
-    const existingData = route.params?.data || {};
+    // Initialize state based on the activity data or default values
+    const [activity, setActivity] = useState(route.params?.data?.name || '');
+    const [date, setDate] = useState(route.params?.data ? new Date(route.params.data.date) : null);
+    const [duration, setDuration] = useState(route.params?.data?.duration?.toString() || '');
+    const [removeSpecial, setRemoveSpecial] = useState(false); // Track checkbox state
+    const [open, setOpen] = useState(false); // Dropdown open/close state
 
-    // State initialization
-    const [activity, setActivity] = useState(existingData.name || '');
-    const [date, setDate] = useState(existingData.date ? new Date(existingData.date) : null);
-    const [duration, setDuration] = useState(existingData.duration?.toString() || '');
-    const [open, setOpen] = useState(false);
-    const [isChecked, setChecked] = useState(false); // Checkbox starts unchecked
+    // On initial load, set checkbox state based on the activity's 'special' status
+    useEffect(() => {
+        if (isEditMode && route.params?.data) {
+            setRemoveSpecial(!route.params.data.special); // Checkbox reflects the 'special' field
+        }
+    }, [route.params?.data, isEditMode]);
 
-    // Header setup
+    // Configure the navigation header with a delete button in edit mode
     useLayoutEffect(() => {
-        const headerRight = isEditMode ? () => (
-            <Pressable onPress={deleteHandler} style={{ paddingRight: 10 }}>
-                <Feather name="trash-2" size={24} color="#fff" />
-            </Pressable>
-        ) : undefined;
-
         navigation.setOptions({
             headerTitle: isEditMode ? 'Edit' : 'Add An Activity',
-            headerBackTitleVisible: false,
+            headerRight: isEditMode ? () => (
+                <Pressable onPress={handleDelete} style={{ paddingRight: 10 }}>
+                    <Feather name="trash-2" size={24} color="#fff" />
+                </Pressable>
+            ) : undefined,
             headerStyle: { backgroundColor: '#3a5a40' },
             headerTintColor: '#fff',
-            headerRight,
         });
-    }, [navigation, isEditMode, deleteHandler]);
+    }, [navigation, isEditMode]);
 
-    // Save handler
+    // Handle the deletion of an activity
+    const handleDelete = () => {
+        Alert.alert(
+            'Confirm Deletion',
+            'Are you sure you want to delete this activity?',
+            [
+                { text: 'No', style: 'cancel' },
+                {
+                    text: 'Yes',
+                    onPress: async () => {
+                        await deleteDocument('activities', route.params.data.id);
+                        Alert.alert('Deleted', 'Activity has been deleted.');
+                        navigation.goBack();
+                    },
+                },
+            ]
+        );
+    };
+
+    // Handle saving the activity
     const onSave = async () => {
         if (!activity || !date || !duration) {
             Alert.alert('Invalid input', 'Please fill all fields');
@@ -47,43 +68,29 @@ export default function AddActivity({ navigation, route, deleteHandler }) {
         }
 
         if (isNaN(duration) || duration <= 0) {
-            Alert.alert('Invalid input', 'Please check your input values');
+            Alert.alert('Invalid input', 'Please enter a valid duration');
             return;
         }
 
-        // If checkbox is checked, the activity will no longer be special
-        const updatedSpecial = isChecked ? false : existingData.special;
+        const shouldHaveWarning = (activity === 'Running' || activity === 'Weights') && Number(duration) > 60;
 
-        const activityData = {
+        // Prepare the new activity data with the correct 'special' field
+        const newActivity = {
             name: activity,
             date: date.toDateString(),
             duration: Number(duration),
-            special: updatedSpecial, // Update 'special' based on checkbox
+            special: !removeSpecial && shouldHaveWarning, // If checkbox is checked, 'special' becomes false
         };
 
         try {
             if (isEditMode) {
-                Alert.alert(
-                    'Important',
-                    'Are you sure you want to save these changes?',
-                    [
-                        { text: 'No', style: 'cancel' },
-                        {
-                            text: 'Yes',
-                            onPress: async () => {
-                                await updateDocument('activities', existingData.id, activityData);
-                                Alert.alert('Success', 'Activity updated successfully');
-                                navigation.goBack();
-                            },
-                        },
-                    ]
-                );
+                await updateDocument('activities', route.params.data.id, newActivity);
+                Alert.alert('Success', 'Activity updated successfully');
             } else {
-                const docId = await addDocument('activities', activityData);
-                console.log('Activity added with ID:', docId);
+                await addDocument('activities', newActivity);
                 Alert.alert('Success', 'Activity added successfully');
-                navigation.goBack();
             }
+            navigation.goBack(); // Go back to the activities list
         } catch (error) {
             console.error('Error saving activity:', error);
             Alert.alert('Error', 'Failed to save the activity. Please try again.');
@@ -91,7 +98,7 @@ export default function AddActivity({ navigation, route, deleteHandler }) {
     };
 
     return (
-        <View style={[styles.addScreenContainer, { backgroundColor: themeStyles.backgroundColor, flex: 1 }]}>
+        <View style={[styles.addScreenContainer, { backgroundColor: themeStyles.backgroundColor }]}>
             <Text style={[styles.label, { color: themeStyles.textColor }]}>Activity *</Text>
             <DropDownPicker
                 open={open}
@@ -125,19 +132,21 @@ export default function AddActivity({ navigation, route, deleteHandler }) {
                 onDateChange={setDate}
                 themeStyles={themeStyles}
             />
-            {isEditMode && existingData.special && (
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
-                    <Text style={[styles.label, { color: themeStyles.textColor, flex: 1 }]}>
-                        This item is marked as special. Select the checkbox if you want to approve it.
+
+            {/* Show checkbox only in Edit mode */}
+            {isEditMode && (
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 10 }}>
+                    <Text style={[styles.label, { color: themeStyles.textColor, flex: 1, marginRight: 10 }]}>
+                        This item is marked as special. Select the checkbox if you would like to remove the special status.
                     </Text>
                     <Checkbox
-                        value={isChecked}
-                        onValueChange={setChecked}
-                        style={styles.checkbox}
-                        color={themeStyles.checkboxColor}
+                        value={removeSpecial}
+                        onValueChange={setRemoveSpecial}
+                        style={{ marginLeft: 10 }}
                     />
                 </View>
             )}
+
             <SaveCancelButtonGroup
                 onSave={onSave}
                 onCancel={() => navigation.goBack()}

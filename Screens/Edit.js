@@ -1,7 +1,7 @@
 import React from 'react';
 import { Alert } from 'react-native';
 import AddActivity from './AddActivity';
-import { deleteFromDB } from '../Firebase/firestoreHelper';
+import { deleteDocument } from '../Firebase/firestoreHelper';
 
 export default function Edit({ navigation, route }) {
   const { type, data } = route.params;
@@ -17,16 +17,22 @@ export default function Edit({ navigation, route }) {
     );
   };
 
-  const handleDelete = () => {
-    deleteFromDB(data.id, type === 'activities' ? 'activities' : 'diets');
-    navigation.goBack();
+  const handleDelete = async () => {
+    try {
+      await deleteDocument(type === 'activities' ? 'activities' : 'diets', data.id);
+      console.log(`Deleted ${data.id} from ${type}`);
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error deleting document:', error);
+      Alert.alert('Error', 'Failed to delete the activity. Please try again.');
+    }
   };
 
   return (
     <AddActivity
       navigation={navigation}
-      route={{ params: { type: 'edit', data } }}
-      deleteHandler={deleteHandler} // Ensure deleteHandler is passed correctly
+      route={route}
+      deleteHandler={deleteHandler}
     />
   );
 }

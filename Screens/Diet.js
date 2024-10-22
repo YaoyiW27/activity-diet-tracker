@@ -4,7 +4,7 @@ import ItemsList from '../components/ItemsList';
 import { ThemeContext } from '../context/ThemeContext';
 import { styles } from '../style/StyleHelper';
 import HeaderButton from '../components/HeaderButton';
-import { onCollectionSnapshot } from '../Firebase/firestoreHelper'; 
+import { onCollectionSnapshot } from '../Firebase/firestoreHelper';
 
 export default function Diet({ navigation }) {
     const { themeStyles } = useContext(ThemeContext);
@@ -15,13 +15,13 @@ export default function Diet({ navigation }) {
         navigation.setOptions({
             headerRight: () => (
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}>
-                    <HeaderButton 
+                    <HeaderButton
                         onPress={() => navigation.navigate('AddDiet')}
                         iconName="add"
                         iconFamily="MaterialIcons"
                         themeStyles={themeStyles}
                     />
-                    <HeaderButton 
+                    <HeaderButton
                         onPress={() => navigation.navigate('AddDiet')}
                         iconName="food"
                         iconFamily="MaterialCommunityIcons"
@@ -43,19 +43,27 @@ export default function Diet({ navigation }) {
                 }));
                 setDietData(dietEntries);
             },
-            (error) => {
-                console.error('Error fetching diet entries: ', error);
-            }
+            (error) => console.error('Error fetching diet entries:', error)
         );
 
         // Clean up the subscription on unmount
         return () => unsubscribe();
     }, []);
 
+    const handleDietPress = (item) => {
+        navigation.navigate('AddDiet', { type: 'edit', data: item });
+    };
+
     return (
         <View style={[styles.container, { backgroundColor: themeStyles.backgroundColor }]}>
-            {/* Pass the diet data to ItemsList */}
-            <ItemsList type="diet" data={dietData} />
+            <ItemsList 
+                type="diet" 
+                data={dietData.map((entry) => ({
+                    ...entry,
+                    warning: entry.calories > 800, // Show warning if calories > 800
+                }))}
+                onItemPress={handleDietPress} // Pass the handler to ItemsList
+            />
         </View>
     );
 }

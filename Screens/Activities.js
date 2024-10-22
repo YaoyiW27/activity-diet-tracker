@@ -7,62 +7,60 @@ import HeaderButton from '../components/HeaderButton';
 import { onCollectionSnapshot } from '../Firebase/firestoreHelper';
 
 export default function Activities({ navigation }) {
-  const { themeStyles } = useContext(ThemeContext);
-  const [activities, setActivities] = useState([]);
+    const { themeStyles } = useContext(ThemeContext);
+    const [activities, setActivities] = useState([]);
 
-  // Set up the navigation header with buttons
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}>
-          <HeaderButton
-            onPress={() => navigation.navigate('AddActivity')}
-            iconName="add"
-            iconFamily="MaterialIcons"
-            themeStyles={themeStyles}
-          />
-          <HeaderButton
-            onPress={() => navigation.navigate('AddActivity')}
-            iconName="run"
-            iconFamily="MaterialCommunityIcons"
-            themeStyles={themeStyles}
-          />
+    // Set up the navigation header with buttons
+    React.useLayoutEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}>
+                    <HeaderButton
+                        onPress={() => navigation.navigate('AddActivity')}
+                        iconName="add"
+                        iconFamily="MaterialIcons"
+                        themeStyles={themeStyles}
+                    />
+                    <HeaderButton
+                        onPress={() => navigation.navigate('AddActivity')}
+                        iconName="run"
+                        iconFamily="MaterialCommunityIcons"
+                        themeStyles={themeStyles}
+                    />
+                </View>
+            ),
+        });
+    }, [navigation, themeStyles]);
+
+    // Listen for real-time updates from Firestore
+    useEffect(() => {
+        const unsubscribe = onCollectionSnapshot(
+            'activities',
+            (snapshot) => {
+                const activitiesData = snapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                })).filter(item => item.name); // Ensure valid items
+                setActivities(activitiesData); // Update the state with fetched data
+            },
+            (error) => console.error('Error fetching activities: ', error)
+        );
+    
+        return () => unsubscribe(); // Clean up subscription
+    }, []);
+
+    // Navigate to Edit screen when an activity item is pressed
+    const handleActivityPress = (item) => {
+        navigation.navigate('AddActivity', { data: item });
+    };
+
+    return (
+        <View style={[styles.container, { backgroundColor: themeStyles.backgroundColor }]}>
+            <ItemsList 
+                type="activities" 
+                data={activities} 
+                onItemPress={handleActivityPress} 
+            />
         </View>
-      ),
-    });
-  }, [navigation, themeStyles]);
-
-  // Listen for real-time updates from Firestore
-  useEffect(() => {
-    const unsubscribe = onCollectionSnapshot(
-      'activities',
-      (snapshot) => {
-        const activitiesData = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setActivities(activitiesData);
-      },
-      (error) => console.error('Error fetching activities: ', error)
     );
-
-    // Clean up the subscription on unmount
-    return () => unsubscribe();
-  }, []);
-
-  // Handle activity item press to navigate to Edit screen
-  const handleActivityPress = (item) => {
-    navigation.navigate('AddActivity', { data: item });
-  };
-
-  return (
-    <View style={[styles.container, { backgroundColor: themeStyles.backgroundColor }]}>
-      <ItemsList 
-        type="activities" 
-        data={activities} 
-        navigation={navigation} 
-        onItemPress={handleActivityPress} 
-      />
-    </View>
-  );
 }
