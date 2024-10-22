@@ -1,52 +1,34 @@
-import {  addDoc, collection, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
+// FirestoreHelper.js
+import { collection, addDoc, doc, deleteDoc, updateDoc } from "firebase/firestore";
 import { database } from "./firebaseSetup";
-  
-// Function to add a new document to a specified collection in Firestore
-export async function writeToDB(collectionName, data) {
+
+// Add a new document to Firestore
+export async function writeToDB(item, collectionName) {
   try {
-    const docRef = await addDoc(collection(database, collectionName), data);
-    console.log("Document written with ID: ", docRef.id);
-    return docRef.id; // Return the generated document ID
+    await addDoc(collection(database, collectionName), item);
+    console.log("Document successfully added");
   } catch (err) {
     console.error("Error adding document: ", err);
-    throw err;
   }
 }
-  
-// Function to delete a document from a specified collection in Firestore
-export async function deleteFromDB(collectionName, docId) {
+
+// Delete a document from Firestore
+export async function deleteFromDB(id, collectionName) {
   try {
-    await deleteDoc(doc(database, collectionName, docId));
-    console.log("Document successfully deleted!");
+    await deleteDoc(doc(database, collectionName, id));
+    console.log("Document successfully deleted");
   } catch (err) {
     console.error("Error deleting document: ", err);
-    throw err;
   }
 }
-  
-// Function to read all documents from a specified collection in Firestore
-export async function readFromDB(collectionName) {
+
+// Update an existing document in Firestore
+export async function updateDB(id, collectionName, newItem) {
   try {
-    const querySnapshot = await getDocs(collection(database, collectionName));
-    const data = querySnapshot.docs.map(doc => ({
-      id: doc.id, // Store the document ID
-      ...doc.data(), // Spread the rest of the document data
-    }));
-    return data;
-  } catch (err) {
-    console.error("Error reading documents: ", err);
-    throw err;
-  }
-}
-  
-// Function to update a specific document in Firestore
-export async function updateInDB(collectionName, docId, data) {
-  try {
-    const docRef = doc(database, collectionName, docId);
-    await updateDoc(docRef, data);
-    console.log("Document successfully updated!");
+    const docRef = doc(database, collectionName, id);
+    await updateDoc(docRef, newItem);
+    console.log("Document successfully updated");
   } catch (err) {
     console.error("Error updating document: ", err);
-    throw err;
   }
 }
