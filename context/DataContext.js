@@ -1,21 +1,17 @@
+// DataContext.js
 import React, { createContext, useState } from 'react'
 
 export const DataContext = createContext();
 
 export const DataProvider = ({ children }) => {
-  const [activities, setActivities] = useState([]);
   const [diet, setDiet] = useState([]);
 
-  const addActivity = (activity) => {
-    setActivities((prevActivities) => [...prevActivities, activity]);
-  };
-
-  const addDiet = (diet) => {
-    setDiet((prevDiet) => [...prevDiet, diet]);
+  const addDiet = (dietEntry) => {
+    setDiet((prevDiet) => [...prevDiet, dietEntry]);
   };
 
   return (
-    <DataContext.Provider value={{ activities, diet, addActivity, addDiet }}>
+    <DataContext.Provider value={{ diet, addDiet }}>
       {children}
     </DataContext.Provider>
   )

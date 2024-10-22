@@ -1,11 +1,12 @@
+// AddActivity.js
 import React, { useState, useContext, useLayoutEffect } from 'react';
 import { View, Text, TextInput, Alert } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { DataContext } from '../context/DataContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { styles } from '../style/StyleHelper';
 import SaveCancelButtonGroup from '../components/SaveCancelButtonGroup';
 import DatePickerInput from '../components/DatePickerInput';  
+import { addDocument } from '../Firebase/firestoreHelper'; // Import the helper function
 
 export default function AddActivity({ navigation }) {
     const { themeStyles } = useContext(ThemeContext);
@@ -13,8 +14,8 @@ export default function AddActivity({ navigation }) {
     const [date, setDate] = useState(null);
     const [duration, setDuration] = useState('');
     const [open, setOpen] = useState(false);
-    const { addActivity } = useContext(DataContext);
 
+    // Set up the navigation header
     useLayoutEffect(() => {
         navigation.setOptions({
             headerTitle: 'Add An Activity',
@@ -24,7 +25,9 @@ export default function AddActivity({ navigation }) {
         });
     }, [navigation]);
 
-    const onSave = () => {
+    // Function to handle saving the new activity
+    const onSave = async () => {
+        // Validate input fields
         if (!activity || !date || !duration) {
             Alert.alert('Invalid input', 'Please fill all fields');
             return;
@@ -35,22 +38,31 @@ export default function AddActivity({ navigation }) {
             return;
         }
 
+        // Determine if the activity is special based on criteria
         const isSpecialActivity = (activity === 'Running' || activity === 'Weights') && duration > 60;  
 
+        // Create a new activity object
         const newActivity = {
-            id: Date.now(),
             name: activity,
             date: date.toDateString(),
-            duration: `${duration} min`,
+            duration: Number(duration), // Ensure duration is a number
             special: isSpecialActivity,
         };
 
-        addActivity(newActivity);
-        navigation.goBack();
+        try {
+            // Add the new activity to Firestore using the helper function
+            const docId = await addDocument('activities', newActivity);
+            console.log('Activity successfully added to Firestore with ID:', docId);
+            navigation.goBack(); // Navigate back to the previous screen
+        } catch (error) {
+            console.error('Error adding activity to Firestore: ', error);
+            Alert.alert('Error', 'Failed to add activity. Please try again.');
+        }
     };
 
     return (
         <View style={[styles.addScreenContainer, { backgroundColor: themeStyles.backgroundColor }]}>
+            {/* Activity dropdown picker */}
             <Text style={[styles.label, { color: themeStyles.textColor }]}>Activity *</Text>
             <DropDownPicker
                 open={open}
@@ -66,12 +78,12 @@ export default function AddActivity({ navigation }) {
                 ]}
                 setOpen={setOpen}
                 setValue={setActivity}
-                setItems={items => items}
                 placeholder='Select An Activity' 
                 style={styles.picker}
                 scrollViewProps={{nestedScrollEnabled: true}}
                 listMode="SCROLLVIEW"
             />
+            {/* Duration input */}
             <Text style={[styles.label, { color: themeStyles.textColor }]}>Duration (min) *</Text>
             <TextInput
                 style={styles.input}
@@ -79,12 +91,14 @@ export default function AddActivity({ navigation }) {
                 value={duration}
                 onChangeText={setDuration}
             />
+            {/* Date picker input */}
             <DatePickerInput 
                 label="Date *" 
                 date={date} 
                 onDateChange={setDate} 
                 themeStyles={themeStyles} 
             />
+            {/* Save and Cancel buttons */}
             <SaveCancelButtonGroup
                 onSave={onSave}
                 onCancel={() => navigation.goBack()}
