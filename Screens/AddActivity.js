@@ -1,4 +1,3 @@
-// AddActivity.js
 import React, { useState, useContext, useLayoutEffect } from 'react';
 import { View, Text, TextInput, Alert } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -6,7 +5,7 @@ import { ThemeContext } from '../context/ThemeContext';
 import { styles } from '../style/StyleHelper';
 import SaveCancelButtonGroup from '../components/SaveCancelButtonGroup';
 import DatePickerInput from '../components/DatePickerInput';  
-import { addDocument } from '../Firebase/firestoreHelper'; // Import the helper function
+import { addDocument } from '../Firebase/firestoreHelper'; 
 
 export default function AddActivity({ navigation }) {
     const { themeStyles } = useContext(ThemeContext);

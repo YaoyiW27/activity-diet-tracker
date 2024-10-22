@@ -1,11 +1,10 @@
-// Activities.js
 import React, { useContext, useState, useEffect } from 'react';
 import { View } from 'react-native';
 import ItemsList from '../components/ItemsList';
 import { ThemeContext } from '../context/ThemeContext';
 import { styles } from '../style/StyleHelper';
 import HeaderButton from '../components/HeaderButton';
-import { onCollectionSnapshot } from '../Firebase/firestoreHelper'; // Import the helper function
+import { onCollectionSnapshot } from '../Firebase/firestoreHelper'; 
 
 export default function Activities({ navigation }) {
     const { themeStyles } = useContext(ThemeContext);

@@ -1,6 +1,6 @@
 // firestoreHelper.js
 import { collection, addDoc, doc, deleteDoc, updateDoc, onSnapshot } from 'firebase/firestore';
-import { database } from './firebaseSetup'; // Ensure the path is correct
+import { database } from './firebaseSetup'; 
 
 // Function to add a new document to a specified collection
 export async function addDocument(collectionName, data) {
